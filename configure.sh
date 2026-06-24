@@ -166,18 +166,35 @@ fi
 # Memeriksa status instalasi cargo-mcp
 log_info "Memeriksa status instalasi cargo-mcp..."
 CARGO_MCP_PATH=""
+
+# Coba cari dari PATH dan folder kargo standar terlebih dahulu
 if command -v cargo-mcp >/dev/null 2>&1; then
     CARGO_MCP_PATH=$(command -v cargo-mcp)
-    log_success "cargo-mcp sudah terinstal di: $CARGO_MCP_PATH"
+elif [ -n "$CARGO_HOME" ] && [ -f "$CARGO_HOME/bin/cargo-mcp" ]; then
+    CARGO_MCP_PATH="$CARGO_HOME/bin/cargo-mcp"
+elif [ -f "$HOME/.cargo/bin/cargo-mcp" ]; then
+    CARGO_MCP_PATH="$HOME/.cargo/bin/cargo-mcp"
+fi
+
+if [ -n "$CARGO_MCP_PATH" ]; then
+    log_success "cargo-mcp ditemukan di: $CARGO_MCP_PATH"
 else
-    log_info "Menginstal cargo-mcp via cargo..."
+    log_info "cargo-mcp belum terinstal. Menginstal via cargo..."
     if command -v cargo >/dev/null 2>&1; then
         cargo install cargo-mcp
+        # Cek lagi setelah instalasi
         if command -v cargo-mcp >/dev/null 2>&1; then
             CARGO_MCP_PATH=$(command -v cargo-mcp)
+        elif [ -n "$CARGO_HOME" ] && [ -f "$CARGO_HOME/bin/cargo-mcp" ]; then
+            CARGO_MCP_PATH="$CARGO_HOME/bin/cargo-mcp"
+        elif [ -f "$HOME/.cargo/bin/cargo-mcp" ]; then
+            CARGO_MCP_PATH="$HOME/.cargo/bin/cargo-mcp"
+        fi
+        
+        if [ -n "$CARGO_MCP_PATH" ]; then
             log_success "cargo-mcp berhasil diinstal di: $CARGO_MCP_PATH"
         else
-            log_warning "Gagal menginstal cargo-mcp secara otomatis. Silakan instal manual dengan 'cargo install cargo-mcp'."
+            log_warning "Gagal menginstal atau menemukan cargo-mcp secara otomatis. Silakan instal manual dengan 'cargo install cargo-mcp'."
         fi
     else
         log_warning "cargo tidak ditemukan. Lewati instalasi cargo-mcp."
@@ -188,8 +205,10 @@ export CARGO_MCP_PATH
 CODEBASE_MEMORY_PATH=""
 if command -v codebase-memory-mcp >/dev/null 2>&1; then
     CODEBASE_MEMORY_PATH=$(command -v codebase-memory-mcp)
+elif [ -f "$HOME/.local/bin/codebase-memory-mcp" ]; then
+    CODEBASE_MEMORY_PATH="$HOME/.local/bin/codebase-memory-mcp"
 else
-    CODEBASE_MEMORY_PATH="/home/erel/.local/bin/codebase-memory-mcp"
+    CODEBASE_MEMORY_PATH="$HOME/.local/bin/codebase-memory-mcp"
 fi
 export CODEBASE_MEMORY_PATH
 
@@ -209,7 +228,10 @@ def update_mcp(path):
         except Exception: data = {"mcpServers": {}}
     if "mcpServers" not in data: data["mcpServers"] = {}
     
-    codebase_mem_cmd = os.environ.get("CODEBASE_MEMORY_PATH", "/home/erel/.local/bin/codebase-memory-mcp")
+    codebase_mem_cmd = os.environ.get("CODEBASE_MEMORY_PATH")
+    if not codebase_mem_cmd:
+        codebase_mem_cmd = os.path.expanduser("~/.local/bin/codebase-memory-mcp")
+        
     data["mcpServers"]["codebase-memory"] = {
         "command": codebase_mem_cmd,
         "args": [],
