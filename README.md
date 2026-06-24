@@ -32,16 +32,31 @@ betterimp-fw/
 
 ## **Cara Penggunaan**
 
-Cukup masuk ke folder proyek Anda (misalnya di terminal), lalu jalankan script `configure.sh` dari framework:
+Masuk ke direktori root proyek Anda di terminal, lalu pilih salah satu metode eksekusi berikut:
 
+### **Metode A: Eksekusi Langsung dari GitHub (Instan & Praktis)**
+Gunakan metode ini tanpa perlu mengunduh repositori framework terlebih dahulu:
+```sh
+curl -fsSL https://raw.githubusercontent.com/erelst/betterimp-fw/main/configure.sh | sh
+```
+*Atau menggunakan `wget`:*
+```sh
+wget -qO- https://raw.githubusercontent.com/erelst/betterimp-fw/main/configure.sh | sh
+```
+
+### **Metode B: Eksekusi Lokal (Offline / Terklon)**
+Gunakan metode ini jika Anda sudah mengkloning folder `betterimp-fw` di komputer Anda:
 ```sh
 sh ~/NewRust/betterimp-fw/configure.sh
 ```
 
-Script ini akan otomatis:
-1. Menyalin `AGENTS.md` terintegrasi ke root proyek Anda.
-2. Membuat tautan kompatibilitas `.cursorrules`, `.clinerules`, dan `CLAUDE.md` agar dibaca otomatis oleh VS Code, Cursor, Cline, dan Roo Code.
-3. Menghubungkan skill `caveman`, `ponytail`, dan `ponytail-audit` secara global ke direktori `~/.agents/skills` dan `~/.roo/skills`.
-4. Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
-5. Mengonfigurasi server MCP **codebase-memory-mcp** dan **sequential-thinking** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
-6. Menampilkan log proses instalasi dengan warna terminal (ANSI Styling) yang interaktif dan informatif.
+---
+
+## **Cara Kerja Otomatisasi Script**
+Script ini akan mendeteksi lingkungan eksekusi secara cerdas dan melakukan tugas berikut:
+1. **Menyalin/Mengunduh `AGENTS.md`:** Menyalin dari lokal (jika ada) atau mengunduh dari GitHub ke root proyek Anda.
+2. **Membuat Tautan Kompatibilitas:** Membuat symlink `.cursorrules`, `.clinerules`, dan `CLAUDE.md` ke `AGENTS.md`.
+3. **Menginstal Skill Global:** Mengonfigurasi skill `caveman`, `ponytail`, dan `ponytail-audit` ke `~/.agents/skills` dan `~/.roo/skills`.
+4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
+5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp** dan **sequential-thinking** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
+6. **Tampilan ANSI:** Log proses dengan pewarnaan terminal interaktif.
