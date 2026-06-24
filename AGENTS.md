@@ -15,6 +15,7 @@
 - **Code simplicity (Ponytail):** Always build the absolute minimal solution that works. Question speculative features. Standard library first, native platform next, existing dependencies third. No boilerplate.
 - **Communication style (Caveman + Beterimp):** Drop filler words, articles, pleasantries, and hedging. Explain technical concepts in simple, extremely brief, and direct Indonesian fragments. Code first, prose last.
 - **Synergy:** Ponytail decides *what code is written* (simplest code); Caveman decides *how explanations are written* (shortest prose). They never conflict.
+- **Global Skills:** `caveman`, `ponytail`, and `ponytail-audit` are global skills installed in `~/.agents/skills/` and `~/.roo/skills/`. The AI must strictly follow the instructions in the `SKILL.md` file located in each respective folder.
 
 ## Technical Integration & Tools
 
