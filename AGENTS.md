@@ -23,7 +23,7 @@
 2. **rtk (Rust Token Killer):** All developer command outputs must pass through `rtk` to compress token usage before being processed by the AI.
 3. **codebase-memory-mcp:** AI must query the semantic codebase graph for symbol definitions and call chains to navigate the codebase with sub-millisecond latency.
 4. **sequential-thinking:** AI must leverage this server to break down reasoning steps, explore alternative solutions, and validate assumptions in complex, multi-step code refactoring.
-5. **memory:** AI must leverage this server to store long-term facts, developer preferences, and design style cross-session, maintaining dynamic personalization.
+5. **server-memory mcp:** AI must leverage this server to store long-term facts, developer preferences, and design style cross-session, maintaining dynamic personalization.
 6. **ponytail & ponytail-audit:** Enforce minimal coding. Use `/ponytail-audit` to scan for code bloat, dead code, and speculative abstractions, ranking findings by lines of code to cut.
 
 ## Beterimp Protocol (Core Rules)
