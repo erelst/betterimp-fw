@@ -187,6 +187,10 @@ def update_mcp(path):
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     }
+    data["mcpServers"]["memory"] = {
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory"]
+    }
     with open(path, "w") as f: json.dump(data, f, indent=2)
 
 files = [

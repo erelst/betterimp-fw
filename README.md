@@ -6,7 +6,7 @@ Framework ini menyatukan:
 1. **DOX Framework (`AGENTS.md`):** Mengunci aturan gaya koding dan kontrol mutu tanpa testing playwright yang berat.
 2. **cargo-mcp:** Memaksa AI memverifikasi tipe data dan kompilasi Rust secara instan.
 3. **rtk (Rust Token Killer):** Memotong token output terminal dari perintah shell yang dijalankan.
-4. **codebase-memory-mcp & sequential-thinking:** GPS navigasi semantik instan dan penganalisa logika sekuensial bertahap untuk mencegah bug koding.
+4. **codebase-memory-mcp, sequential-thinking, & memory:** GPS navigasi semantik instan, penganalisa logika sekuensial bertahap, dan penyimpan memori fakta jangka panjang lintas sesi.
 5. **Arugoflow & Dokumentasi Akurat:** Menjaga keandalan dokumen PRD proyek agar sinkron dengan kode riil, serta memaksa AI memakai **Context7** dan **Web Search** demi akurasi API.
 6. **Harmonisasi Caveman & Ponytail:** AI koding diprogram untuk menulis kode paling sederhana (YAGNI/Ponytail) dan menjelaskan secara sangat padat dan ringkas dalam Bahasa Indonesia (Caveman style).
 
@@ -58,5 +58,5 @@ Script ini akan mendeteksi lingkungan eksekusi secara cerdas dan melakukan tugas
 2. **Membuat Tautan Kompatibilitas:** Membuat symlink `.cursorrules`, `.clinerules`, dan `CLAUDE.md` ke `AGENTS.md`.
 3. **Menginstal Skill Global:** Mengonfigurasi skill `caveman`, `ponytail`, dan `ponytail-audit` ke `~/.agents/skills` dan `~/.roo/skills`.
 4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
-5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp** dan **sequential-thinking** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
+5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, dan **memory** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
 6. **Tampilan ANSI:** Log proses dengan pewarnaan terminal interaktif.
