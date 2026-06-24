@@ -162,11 +162,41 @@ else
     fi
 fi
 
-# Konfigurasi codebase-memory-mcp untuk Antigravity, Cline, dan Roo Code
-if [ "$CODEBASE_MEM_INSTALLED" = "1" ]; then
-    log_info "Mengonfigurasi codebase-memory-mcp untuk Antigravity, Cline, dan Roo Code..."
-    if command -v python3 >/dev/null 2>&1; then
-        python3 -c '
+
+# Memeriksa status instalasi cargo-mcp
+log_info "Memeriksa status instalasi cargo-mcp..."
+CARGO_MCP_PATH=""
+if command -v cargo-mcp >/dev/null 2>&1; then
+    CARGO_MCP_PATH=$(command -v cargo-mcp)
+    log_success "cargo-mcp sudah terinstal di: $CARGO_MCP_PATH"
+else
+    log_info "Menginstal cargo-mcp via cargo..."
+    if command -v cargo >/dev/null 2>&1; then
+        cargo install cargo-mcp
+        if command -v cargo-mcp >/dev/null 2>&1; then
+            CARGO_MCP_PATH=$(command -v cargo-mcp)
+            log_success "cargo-mcp berhasil diinstal di: $CARGO_MCP_PATH"
+        else
+            log_warning "Gagal menginstal cargo-mcp secara otomatis. Silakan instal manual dengan 'cargo install cargo-mcp'."
+        fi
+    else
+        log_warning "cargo tidak ditemukan. Lewati instalasi cargo-mcp."
+    fi
+fi
+export CARGO_MCP_PATH
+
+CODEBASE_MEMORY_PATH=""
+if command -v codebase-memory-mcp >/dev/null 2>&1; then
+    CODEBASE_MEMORY_PATH=$(command -v codebase-memory-mcp)
+else
+    CODEBASE_MEMORY_PATH="/home/erel/.local/bin/codebase-memory-mcp"
+fi
+export CODEBASE_MEMORY_PATH
+
+# Konfigurasi MCP server untuk Antigravity, Cline, dan Roo Code
+log_info "Mengonfigurasi MCP server untuk Antigravity, Cline, dan Roo Code..."
+if command -v python3 >/dev/null 2>&1; then
+    python3 -c '
 import json, os
 def update_mcp(path):
     path = os.path.expanduser(path)
@@ -178,8 +208,10 @@ def update_mcp(path):
             with open(path, "r") as f: data = json.load(f)
         except Exception: data = {"mcpServers": {}}
     if "mcpServers" not in data: data["mcpServers"] = {}
+    
+    codebase_mem_cmd = os.environ.get("CODEBASE_MEMORY_PATH", "/home/erel/.local/bin/codebase-memory-mcp")
     data["mcpServers"]["codebase-memory"] = {
-        "command": "/home/erel/.local/bin/codebase-memory-mcp",
+        "command": codebase_mem_cmd,
         "args": [],
         "env": {"CODEBASE_MEMORY_LOG_LEVEL": "info"}
     }
@@ -190,6 +222,11 @@ def update_mcp(path):
     data["mcpServers"]["memory"] = {
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-memory"]
+    }
+    cargo_mcp_cmd = os.environ.get("CARGO_MCP_PATH", "cargo-mcp")
+    data["mcpServers"]["cargo-mcp"] = {
+        "command": cargo_mcp_cmd,
+        "args": ["serve"]
     }
     with open(path, "w") as f: json.dump(data, f, indent=2)
 
@@ -207,11 +244,11 @@ for f in files:
     except Exception as e:
         print(f"  [SKIP] {f} ({e})")
 '
-        log_success "Konfigurasi MCP selesai!"
-    else
-        log_warning "python3 tidak ditemukan. Silakan konfigurasi MCP server secara manual."
-    fi
+    log_success "Konfigurasi MCP selesai!"
+else
+    log_warning "python3 tidak ditemukan. Silakan konfigurasi MCP server secara manual."
 fi
+
 
 # 5. Otomatisasi Child DOX Index
 log_info "Memulai otomatisasi dan sinkronisasi Child DOX Index..."

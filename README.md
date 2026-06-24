@@ -57,6 +57,6 @@ Script ini akan mendeteksi lingkungan eksekusi secara cerdas dan melakukan tugas
 1. **Menyalin/Mengunduh `AGENTS.md`:** Menyalin dari lokal (jika ada) atau mengunduh dari GitHub ke root proyek Anda.
 2. **Membuat Tautan Kompatibilitas:** Membuat symlink `.cursorrules`, `.clinerules`, dan `CLAUDE.md` ke `AGENTS.md`.
 3. **Menginstal Skill Global:** Mengonfigurasi skill `caveman`, `ponytail`, dan `ponytail-audit` ke `~/.agents/skills` dan `~/.roo/skills`.
-4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
-5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, dan **server-memory mcp** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
+4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk**, **codebase-memory-mcp**, dan **cargo-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
+5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, **server-memory mcp**, dan **cargo-mcp** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
 6. **Tampilan ANSI:** Log proses dengan pewarnaan terminal interaktif.
