@@ -257,7 +257,8 @@ files = [
     "~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json",
     "~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json",
     "~/.config/VSCodium/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json",
-    "~/.config/VSCodium/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json"
+    "~/.config/VSCodium/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json",
+    "~/.config/Antigravity/User/globalStorage/zoocodeorganization.zoo-code/settings/mcp_settings.json"
 ]
 for f in files:
     try:
