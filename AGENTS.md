@@ -28,6 +28,8 @@
 
 ## Beterimp Protocol (Core Rules)
 
+*This protocol serves as the operational guide for executing any tasks or edits within the DOX workflow. It ensures that all DOX phases are executed with technical precision, verified facts, and structured reasoning.*
+
 1. **Bahasa Indonesia Sederhana & Jelas ("caveman skill dari path global skills" style):** Komunikasi wajib menggunakan Bahasa Indonesia yang sangat singkat, padat, dan langsung pada intinya. Hindari basa-basi.
 2. **Wawancara Detail & Spesifikasi Teknis:** Sebelum melakukan perubahan penting, wajib bertanya/wawancara singkat untuk mengidentifikasi tujuan utama proyek. Utamakan spesifikasi teknis detail (seperti alokasi memori, format data, kompatibilitas browser).
 3. **Konfirmasi Keputusan Penting:** Selalu meminta konfirmasi tegas dari pengguna sebelum melakukan tindakan yang mengubah arsitektur utama atau destruktif.
@@ -48,13 +50,14 @@
 
 ## Read Before Editing
 
-1. Read the root AGENTS.md
-2. Identify every file or folder you expect to touch
-3. Walk from the repository root to each target path
-4. Read every AGENTS.md found along each route
-5. If a parent AGENTS.md lists a child AGENTS.md whose scope contains the path, read that child and continue from there
-6. Use the nearest AGENTS.md as the local contract and parent docs for repo-wide rules
-7. If docs conflict, the closer doc controls local work details, but no child doc may weaken DOX
+1. Read the root AGENTS.md.
+2. **Check State & Constraints:** Read the `## State & Constraints` section of this AGENTS.md. Identify any active constraints or fixed features (Anti-Regresi) that overlap with the target paths to ensure you do not violate rules or introduce regressions.
+3. Identify every file or folder you expect to touch.
+4. Walk from the repository root to each target path.
+5. Read every AGENTS.md found along each route.
+6. If a parent AGENTS.md lists a child AGENTS.md whose scope contains the path, read that child and continue from there.
+7. Use the nearest AGENTS.md as the local contract and parent docs for repo-wide rules.
+8. If docs conflict, the closer doc controls local work details, but no child doc may weaken DOX.
 
 Do not rely on memory. Re-read the applicable DOX chain in the current session before editing.
 
@@ -69,6 +72,7 @@ Update the closest owning AGENTS.md when a change affects:
 - required inputs, outputs, permissions, constraints, side effects, or artifacts
 - user preferences about behavior, communication, process, organization, or quality
 - AGENTS.md creation, deletion, move, rename, or index contents
+- **Update State & Constraints:** Update `## State & Constraints` (Anti-Regresi / Strict Constraints) when a change refactors a feature, fixes a bug, or introduces a new structural/behavioral constraint.
 
 Update parent docs when parent-level structure, ownership, workflow, or child index changes. Update child docs when parent changes alter local rules. Remove stale or contradictory text immediately. Small edits that do not change behavior or contracts may leave docs unchanged, but the DOX pass still must happen.
 
@@ -105,18 +109,20 @@ Default section order:
 
 ## Closeout
 
-1. Re-check changed paths against the DOX chain
-2. Update nearest owning docs and any affected parents or children
-3. Refresh every affected Child DOX Index
-4. Remove stale or contradictory text
-5. Run existing verification when relevant
-6. Report any docs intentionally left unchanged and why
+1. Re-check changed paths against the DOX chain.
+2. Update nearest owning docs and any affected parents or children.
+3. Refresh every affected Child DOX Index.
+4. Remove stale or contradictory text.
+5. **Execute Verification:** Run the validation checks specified in the `## Verification` section of this AGENTS.md (e.g., compiling via `cargo-mcp`, checking YAGNI principles, and ensuring communication conforms to `"caveman skill dari path global skills"`).
+6. Report any docs intentionally left unchanged and why.
 
 ## User Preferences
 
-When the user requests a durable behavior change, record it here or in the relevant child AGENTS.md
+When the user requests a durable behavior change, record it here or in the relevant child AGENTS.md.
 
 ## State & Constraints
+
+*This section serves as the project's living registry of system state and boundaries. It is a binding part of the DOX workflow: it must be consulted during the **Read Before Editing** phase to avoid regressions, and it must be updated during the **Update After Editing** phase to document new fixes or constraints.*
 
 ### 1. Refactored & Fixed (Anti-Regresi)
 *Format: [YYYY-MM-DD HH:MM] [Fitur]: Deskripsi singkat perbaikan. Jangan ubah/sentuh bagian [X] karena [Alasan].*
@@ -127,6 +133,8 @@ When the user requests a durable behavior change, record it here or in the relev
 - *(Belum ada catatan aktif)*
 
 ## Verification
+
+*This section defines the mandatory quality checks that must be successfully executed during the DOX **Closeout** phase before any task can be declared complete.*
 
 Sebelum menyatakan pekerjaan selesai, AI wajib memastikan:
 - Kode berhasil dikompilasi bersih via `cargo-mcp` tanpa error/warning.
