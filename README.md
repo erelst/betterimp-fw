@@ -4,11 +4,10 @@ Betterimp Framework adalah perkakas pengembangan ringan yang dirancang untuk men
 
 Framework ini menyatukan:
 1. **DOX Framework (`AGENTS.md`):** Mengunci aturan gaya koding dan kontrol mutu tanpa testing playwright yang berat.
-2. **cargo-mcp:** Memaksa AI memverifikasi tipe data dan kompilasi Rust secara instan.
-3. **rtk (Rust Token Killer):** Memotong token output terminal dari perintah shell yang dijalankan.
-4. **codebase-memory-mcp, sequential-thinking, & server-memory mcp:** GPS navigasi semantik instan, penganalisa logika sekuensial bertahap, dan penyimpan memori fakta jangka panjang lintas sesi.
-5. **Arugoflow & Dokumentasi Akurat:** Menjaga keandalan dokumen PRD proyek agar sinkron dengan kode riil, serta memaksa AI memakai **Context7** dan **Web Search** demi akurasi API.
-6. **Harmonisasi Caveman & Ponytail:** AI koding diprogram untuk menulis kode paling sederhana (YAGNI/Ponytail) dan menjelaskan secara sangat padat dan ringkas dalam Bahasa Indonesia (Caveman style).
+2. **rtk (Rust Token Killer):** Memotong token output terminal dari perintah shell yang dijalankan (60-90% savings). Implementasi via `rtk hook claude` — semua command otomatis direwrite transparan.
+3. **codebase-memory-mcp, sequential-thinking, & server-memory mcp:** GPS navigasi semantik instan, penganalisa logika sekuensial bertahap, dan penyimpan memori fakta jangka panjang lintas sesi.
+4. **Arugoflow & Dokumentasi Akurat:** Menjaga keandalan dokumen PRD proyek agar sinkron dengan kode riil, serta memaksa AI memakai **Context7** dan **Web Search** demi akurasi API.
+5. **Harmonisasi Caveman & Ponytail:** AI koding diprogram untuk menulis kode paling sederhana (YAGNI/Ponytail) dan menjelaskan secara sangat padat dan ringkas dalam Bahasa Indonesia (Caveman style).
 
 ---
 
@@ -57,6 +56,6 @@ Script ini akan mendeteksi lingkungan eksekusi secara cerdas dan melakukan tugas
 1. **Menyalin/Mengunduh `AGENTS.md`:** Menyalin dari lokal (jika ada) atau mengunduh dari GitHub ke root proyek Anda.
 2. **Membuat Tautan Kompatibilitas:** Membuat symlink `.cursorrules`, `.clinerules`, dan `CLAUDE.md` ke `AGENTS.md`.
 3. **Menginstal Skill Global:** Mengonfigurasi skill `caveman`, `ponytail`, dan `ponytail-audit` ke `~/.agents/skills` dan `~/.roo/skills`.
-4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk**, **codebase-memory-mcp**, dan **cargo-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
-5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, **server-memory mcp**, dan **cargo-mcp** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
+4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
+5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, dan **server-memory mcp** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
 6. **Tampilan ANSI:** Log proses dengan pewarnaan terminal interaktif.

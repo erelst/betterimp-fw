@@ -1,13 +1,13 @@
 # DOX Framework - Betterimp Framework (betterimp-fw)
 
-- Purpose: Global AI-assisted development framework combining DOX, cargo-mcp, rtk, codebase-memory-mcp, "ponytail skill dari path global skills", and "caveman skill dari path global skills".
+- Purpose: Global AI-assisted development framework combining DOX, rtk, codebase-memory-mcp, "ponytail skill dari path global skills", and "caveman skill dari path global skills".
 - Ownership: Centralized, anti-regression, high-efficiency development standard.
 
 ## Purpose
 
 `betterimp-fw` is a streamlined, high-performance global framework designed to maximize token savings, prevent code regressions, and enforce pragmatic engineering. It integrates:
 1. **DOX Framework:** Hierarchical folder-based rules (`AGENTS.md`) acting as binding contracts.
-2. **Tooling & MCPs:** `cargo-mcp` (compilation), `rtk` (token reduction for commands), and `codebase-memory-mcp` (semantic navigation).
+2. **Tooling & MCPs:** `rtk` (token reduction for commands), `codebase-memory-mcp` (semantic navigation), `sequential-thinking`, and `server-memory`.
 3. **Optimized Behaviors:** Sinergi antara "ponytail skill dari path global skills" (kode minimalis/YAGNI) dan "caveman skill dari path global skills" (komunikasi sangat padat) dalam Bahasa Indonesia sederhana.
 
 ## Local Contracts
@@ -20,12 +20,33 @@
 
 ## Technical Integration & Tools
 
-1. **cargo-mcp:** AI must run `cargo check` and `cargo clippy` via MCP tools after every Rust edit to guarantee type safety and zero warnings.
-2. **rtk (Rust Token Killer):** All developer command outputs must pass through `rtk` to compress token usage before being processed by the AI.
-3. **codebase-memory-mcp:** AI must query the semantic codebase graph for symbol definitions and call chains to navigate the codebase with sub-millisecond latency.
-4. **sequential-thinking:** AI must leverage this server to break down reasoning steps, explore alternative solutions, and validate assumptions in complex, multi-step code refactoring.
-5. **server-memory mcp:** AI must leverage this server to store long-term facts, developer preferences, and design style cross-session, maintaining dynamic personalization.
-6. **Global Audit Skills:** AI wajib menggunakan skill audit koding dari path global skills untuk memindai pembengkakan kode (code bloat), kode mati (dead code), dan abstraksi spekulatif, mengurutkan temuan berdasarkan baris kode yang dapat dipangkas demi menjaga efisiensi koding.
+1. **rtk (Rust Token Killer):** Semua output developer command WAJIB melalui `rtk` untuk kompresi token (60-90% savings). Implementasi detail:
+   - **Claude Code Hook:** `rtk hook claude` — daftarkan hook untuk rewrite semua command secara transparan. Jika hook aktif, command biasa seperti `git status` otomatis jadi `rtk git status` (0 token overhead).
+   - **Hook Manual (jika hook belum aktif):** Tambahkan ke `settings.json`:
+     ```json
+     {
+       "hooks": { "PreToolUse": [{
+         "matcher": "Bash",
+         "hooks": [{ "type": "command",
+           "command": "rtk hook claude"
+         }]
+       }]}
+     }
+     ```
+   - **RTK.md:** `~/.claude/RTK.md` — berisi meta commands reference.
+   - **CLAUDE.md:** Referensi `@RTK.md` ditambahkan otomatis oleh `rtk init -g`.
+   - **Filters Global:** `~/.config/rtk/filters.toml` — template filter user-global (schema v1 untuk kustomisasi output).
+   - **Meta Commands (pakai `rtk` langsung, tidak auto-hook):**
+     - `rtk gain` — lihat analitik penghematan token
+     - `rtk gain --history` — lihat histori command dengan savings
+     - `rtk discover` — analisa histori Claude Code untuk missed opportunities
+     - `rtk proxy <cmd>` — eksekusi raw command tanpa filtering (debug)
+   - **Verifikasi Instalasi:** `rtk --version`, `rtk gain`
+   - **Nama collison safeguard:** Jika `rtk gain` gagal, mungkin terinstal `reachingforthejack/rtk` (Rust Type Kit) bukan `rtk-ai/rtk`. Cek dengan `which rtk`.
+2. **codebase-memory-mcp:** AI must query the semantic codebase graph for symbol definitions and call chains to navigate the codebase with sub-millisecond latency.
+3. **sequential-thinking:** AI must leverage this server to break down reasoning steps, explore alternative solutions, and validate assumptions in complex, multi-step code refactoring.
+4. **server-memory mcp:** AI must leverage this server to store long-term facts, developer preferences, and design style cross-session, maintaining dynamic personalization.
+5. **Global Audit Skills:** AI wajib menggunakan skill audit koding (ponytail-audit) dari path global skills untuk memindai pembengkakan kode (code bloat), kode mati (dead code), dan abstraksi spekulatif, mengurutkan temuan berdasarkan baris kode yang dapat dipangkas demi menjaga efisiensi koding.
 
 ## Beterimp Protocol (Core Rules)
 
@@ -114,7 +135,7 @@ Default section order:
 2. Update nearest owning docs and any affected parents or children.
 3. Refresh every affected Child DOX Index.
 4. Remove stale or contradictory text.
-5. **Execute Verification:** Run the validation checks specified in the `## Verification` section of this AGENTS.md (e.g., compiling via `cargo-mcp`, checking YAGNI principles, and ensuring communication conforms to `"caveman skill dari path global skills"`).
+5. **Execute Verification:** Run the validation checks specified in the `## Verification` section of this AGENTS.md (e.g., `cargo check`, `cargo clippy`, checking YAGNI principles, and ensuring communication conforms to `"caveman skill dari path global skills"`).
 6. Report any docs intentionally left unchanged and why.
 
 ## User Preferences
@@ -138,7 +159,7 @@ When the user requests a durable behavior change, record it here or in the relev
 *This section defines the mandatory quality checks that must be successfully executed during the DOX **Closeout** phase before any task can be declared complete.*
 
 Sebelum menyatakan pekerjaan selesai, AI wajib memastikan:
-- Kode berhasil dikompilasi bersih via `cargo-mcp` tanpa error/warning.
+- Kode berhasil dikompilasi bersih (`cargo check`, `cargo clippy`) tanpa error/warning.
 - Tidak ada kode baru yang melanggar prinsip YAGNI (lakukan audit mandiri).
 - Penjelasan akhir ditulis dalam Bahasa Indonesia gaya Caveman yang sangat terkompresi.
 

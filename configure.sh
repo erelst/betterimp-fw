@@ -43,20 +43,59 @@ log_error() {
 }
 
 # Helper untuk menyalin atau mengunduh AGENTS.md
+# Dengan smart merge: pertahankan State & Constraints + Child DOX Index proyek
 copy_or_download_agents() {
+    TMP_AGENTS=$(mktemp /tmp/AGENTS.md.XXXXXX)
+    
     if [ -f "$SCRIPT_DIR/AGENTS.md" ]; then
         log_info "Menyalin AGENTS.md dari folder lokal..."
-        cp "$SCRIPT_DIR/AGENTS.md" ./AGENTS.md
+        cp "$SCRIPT_DIR/AGENTS.md" "$TMP_AGENTS"
     else
         log_info "Mengunduh AGENTS.md dari GitHub..."
         if command -v curl >/dev/null 2>&1; then
-            curl -fsSL "$RAW_GITHUB_URL/AGENTS.md" -o ./AGENTS.md
+            curl -fsSL "$RAW_GITHUB_URL/AGENTS.md" -o "$TMP_AGENTS"
         elif command -v wget >/dev/null 2>&1; then
-            wget -qO ./AGENTS.md "$RAW_GITHUB_URL/AGENTS.md"
+            wget -qO "$TMP_AGENTS" "$RAW_GITHUB_URL/AGENTS.md"
         else
+            rm -f "$TMP_AGENTS"
             log_error "curl atau wget tidak ditemukan. Gagal mengunduh AGENTS.md."
         fi
     fi
+
+    # Jika proyek sudah punya AGENTS.md, merge bagian spesifik proyek
+    if [ -f "AGENTS.md" ]; then
+        python3 -c "
+import re, sys
+old_path = 'AGENTS.md'
+new_path = '$TMP_AGENTS'
+
+with open(old_path) as f:
+    old = f.read()
+with open(new_path) as f:
+    new = f.read()
+
+# Seksi yang harus dipertahankan dari proyek
+preserve_sections = ['## State & Constraints', '## User Preferences', '## Child DOX Index']
+
+for section in preserve_sections:
+    # Cari di file lama
+    old_match = re.search(re.escape(section) + r'\n.*?(?=\n## |\Z)', old, re.DOTALL)
+    if old_match:
+        old_content = old_match.group(0)
+        # Ganti di file baru, case-sensitive
+        pattern = re.escape(section) + r'\n.*?(?=\n## |\Z)'
+        if re.search(pattern, new, re.DOTALL):
+            new = re.sub(pattern, old_content, new, count=1, flags=re.DOTALL)
+
+with open('$TMP_AGENTS', 'w') as f:
+    f.write(new)
+print('[MERGE] Seksi proyek dipertahankan: State & Constraints, User Preferences, Child DOX Index')
+" 2>&1 || log_warning "Gagal melakukan merge AGENTS.md, gunakan template baru polos."
+    fi
+
+    # Pindahkan hasil merge ke AGENTS.md
+    cp "$TMP_AGENTS" ./AGENTS.md
+    rm -f "$TMP_AGENTS"
 }
 
 # 1. Konfigurasi AGENTS.md ke Proyek
@@ -162,46 +201,6 @@ else
     fi
 fi
 
-
-# Memeriksa status instalasi cargo-mcp
-log_info "Memeriksa status instalasi cargo-mcp..."
-CARGO_MCP_PATH=""
-
-# Coba cari dari PATH dan folder kargo standar terlebih dahulu
-if command -v cargo-mcp >/dev/null 2>&1; then
-    CARGO_MCP_PATH=$(command -v cargo-mcp)
-elif [ -n "$CARGO_HOME" ] && [ -f "$CARGO_HOME/bin/cargo-mcp" ]; then
-    CARGO_MCP_PATH="$CARGO_HOME/bin/cargo-mcp"
-elif [ -f "$HOME/.cargo/bin/cargo-mcp" ]; then
-    CARGO_MCP_PATH="$HOME/.cargo/bin/cargo-mcp"
-fi
-
-if [ -n "$CARGO_MCP_PATH" ]; then
-    log_success "cargo-mcp ditemukan di: $CARGO_MCP_PATH"
-else
-    log_info "cargo-mcp belum terinstal. Menginstal via cargo..."
-    if command -v cargo >/dev/null 2>&1; then
-        cargo install cargo-mcp
-        # Cek lagi setelah instalasi
-        if command -v cargo-mcp >/dev/null 2>&1; then
-            CARGO_MCP_PATH=$(command -v cargo-mcp)
-        elif [ -n "$CARGO_HOME" ] && [ -f "$CARGO_HOME/bin/cargo-mcp" ]; then
-            CARGO_MCP_PATH="$CARGO_HOME/bin/cargo-mcp"
-        elif [ -f "$HOME/.cargo/bin/cargo-mcp" ]; then
-            CARGO_MCP_PATH="$HOME/.cargo/bin/cargo-mcp"
-        fi
-        
-        if [ -n "$CARGO_MCP_PATH" ]; then
-            log_success "cargo-mcp berhasil diinstal di: $CARGO_MCP_PATH"
-        else
-            log_warning "Gagal menginstal atau menemukan cargo-mcp secara otomatis. Silakan instal manual dengan 'cargo install cargo-mcp'."
-        fi
-    else
-        log_warning "cargo tidak ditemukan. Lewati instalasi cargo-mcp."
-    fi
-fi
-export CARGO_MCP_PATH
-
 CODEBASE_MEMORY_PATH=""
 if command -v codebase-memory-mcp >/dev/null 2>&1; then
     CODEBASE_MEMORY_PATH=$(command -v codebase-memory-mcp)
@@ -244,11 +243,6 @@ def update_mcp(path):
     data["mcpServers"]["memory"] = {
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-memory"]
-    }
-    cargo_mcp_cmd = os.environ.get("CARGO_MCP_PATH", "cargo-mcp")
-    data["mcpServers"]["cargo-mcp"] = {
-        "command": cargo_mcp_cmd,
-        "args": ["serve"]
     }
     with open(path, "w") as f: json.dump(data, f, indent=2)
 
