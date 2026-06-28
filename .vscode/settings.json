@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "AGENTS.md": "markdown",
+        "STATE.md": "markdown"
+    },
+    "[markdown]": {
+        "editor.wordWrap": "on"
+    }
+}

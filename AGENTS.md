@@ -1,85 +1,22 @@
-# DOX Framework - Betterimp Framework (betterimp-fw)
+# AGENTS.md
 
-- Purpose: Global AI-assisted development framework combining DOX, rtk, codebase-memory-mcp, "ponytail skill dari path global skills", and "caveman skill dari path global skills".
-- Ownership: Centralized, anti-regression, high-efficiency development standard.
-
-## Purpose
-
-`betterimp-fw` is a streamlined, high-performance global framework designed to maximize token savings, prevent code regressions, and enforce pragmatic engineering. It integrates:
-1. **DOX Framework:** Hierarchical folder-based rules (`AGENTS.md`) acting as binding contracts.
-2. **Tooling & MCPs:** `rtk` (token reduction for commands), `codebase-memory-mcp` (semantic navigation), `sequential-thinking`, and `server-memory`.
-3. **Optimized Behaviors:** Sinergi antara "ponytail skill dari path global skills" (kode minimalis/YAGNI) dan "caveman skill dari path global skills" (komunikasi sangat padat) dalam Bahasa Indonesia sederhana.
-
-## Local Contracts
-
-- **Code simplicity ("ponytail skill dari path global skills"):** Selalu bangun solusi paling minimal yang berfungsi. Pertanyakan fitur spekulatif. Pustaka standar didahulukan, fitur bawaan platform berikutnya, dependensi yang sudah ada ketiga. Tanpa boilerplate.
-- **Communication style ("caveman skill dari path global skills" + Beterimp):** Hapus kata pengisi, artikel, basa-basi, dan hedging. Jelaskan konsep teknis secara sederhana, sangat singkat, dan langsung dalam fragmen Bahasa Indonesia. Kode didahulukan, penjelasan belakangan.
-- **PRD & Document Style (Arugoflow):** Ketika menulis/memperbarui PRD, About, FAQ, atau halaman pengguna, dilarang keras menggunakan jargon teknis pemrograman (seperti utility CSS, nama variabel/fungsi, Leptos signals, detail arsitektur internal). Gunakan bahasa manusia fungsional yang berfokus pada user experience (UX) dan metafora desain umum. Deskripsi wajib realistis dan selaras dengan kode nyata untuk mencegah *overclaiming* (bedakan secara jelas status prototipe saat ini, fitur terencana, dan fungsionalitas penuh).
-- **Synergy:** "ponytail skill dari path global skills" menentukan *kode apa yang ditulis* (kode paling sederhana); "caveman skill dari path global skills" menentukan *bagaimana penjelasan ditulis* (prosa paling singkat). Keduanya tidak pernah bertentangan.
-- **Global Skills:** Seluruh modul skill yang terpasang di direktori global (`~/.agents/skills/` dan `~/.roo/skills/`) bersifat mengikat. AI wajib mendeteksi dan mematuhi instruksi dalam berkas `SKILL.md` pada masing-masing direktori skill tersebut (seperti "caveman skill dari path global skills", "ponytail skill dari path global skills", dll.) tanpa terkecuali.
-
-## Technical Integration & Tools
-
-1. **rtk (Rust Token Killer):** Semua output developer command WAJIB melalui `rtk` untuk kompresi token (60-90% savings). Implementasi detail:
-   - **Claude Code Hook:** `rtk hook claude` — daftarkan hook untuk rewrite semua command secara transparan. Jika hook aktif, command biasa seperti `git status` otomatis jadi `rtk git status` (0 token overhead).
-   - **Hook Manual (jika hook belum aktif):** Tambahkan ke `settings.json`:
-     ```json
-     {
-       "hooks": { "PreToolUse": [{
-         "matcher": "Bash",
-         "hooks": [{ "type": "command",
-           "command": "rtk hook claude"
-         }]
-       }]}
-     }
-     ```
-   - **RTK.md:** `~/.claude/RTK.md` — berisi meta commands reference.
-   - **CLAUDE.md:** Referensi `@RTK.md` ditambahkan otomatis oleh `rtk init -g`.
-   - **Filters Global:** `~/.config/rtk/filters.toml` — template filter user-global (schema v1 untuk kustomisasi output).
-   - **Meta Commands (pakai `rtk` langsung, tidak auto-hook):**
-     - `rtk gain` — lihat analitik penghematan token
-     - `rtk gain --history` — lihat histori command dengan savings
-     - `rtk discover` — analisa histori Claude Code untuk missed opportunities
-     - `rtk proxy <cmd>` — eksekusi raw command tanpa filtering (debug)
-   - **Verifikasi Instalasi:** `rtk --version`, `rtk gain`
-   - **Nama collison safeguard:** Jika `rtk gain` gagal, mungkin terinstal `reachingforthejack/rtk` (Rust Type Kit) bukan `rtk-ai/rtk`. Cek dengan `which rtk`.
-2. **codebase-memory-mcp:** AI must query the semantic codebase graph for symbol definitions and call chains to navigate the codebase with sub-millisecond latency.
-3. **sequential-thinking:** AI must leverage this server to break down reasoning steps, explore alternative solutions, and validate assumptions in complex, multi-step code refactoring.
-4. **server-memory mcp:** AI must leverage this server to store long-term facts, developer preferences, and design style cross-session, maintaining dynamic personalization.
-5. **Global Audit Skills:** AI wajib menggunakan skill audit koding (ponytail-audit) dari path global skills untuk memindai pembengkakan kode (code bloat), kode mati (dead code), dan abstraksi spekulatif, mengurutkan temuan berdasarkan baris kode yang dapat dipangkas demi menjaga efisiensi koding.
-
-## Beterimp Protocol (Core Rules)
-
-*This protocol serves as the operational guide for executing any tasks or edits within the DOX workflow. It ensures that all DOX phases are executed with technical precision, verified facts, and structured reasoning.*
-
-1. **Bahasa Indonesia Sederhana & Jelas ("caveman skill dari path global skills" style):** Komunikasi wajib menggunakan Bahasa Indonesia yang sangat singkat, padat, dan langsung pada intinya. Hindari basa-basi.
-2. **Wawancara Detail, Perencanaan Mikro, & Spesifikasi Teknis:** Sebelum melakukan perubahan penting, wajib bertanya/wawancara singkat untuk mengidentifikasi tujuan utama proyek secara mendalam. Utamakan spesifikasi teknis detail (seperti alokasi memori, format data, kompatibilitas browser) dan susun perencanaan langkah kerja mikro (micro-step planning) sebelum mulai menulis kode.
-3. **Konfirmasi Keputusan Penting:** Selalu meminta konfirmasi tegas dari pengguna sebelum melakukan tindakan yang mengubah arsitektur utama atau destruktif.
-4. **Kriteria Evaluasi Kualitas:** Setiap penyelesaian tugas harus melalui verifikasi mandiri yang ketat (compilation, linter) sebelum dilaporkan kepada pengguna.
-5. **Arugoflow (Sinkronisasi PRD & Gaya Deskriptif):** AI wajib menjaga sinkronisasi antara implementasi kode nyata dengan dokumen spesifikasi/PRD. Jika terjadi perubahan fitur, alur UX, desain UI, atau kapabilitas teknis, AI wajib memperbarui berkas PRD (atau berkas apapun yang namanya mengandung kata "prd") menggunakan gaya penulisan deskriptif Arugoflow (bebas dari jargon teknis pemrograman) dan pastikan narasi fungsional bersifat akurat serta bebas dari klaim fiktif (anti-overclaiming).
-6. **Akurasi Informasi (Context7 & Web Search):** AI dilarang menebak atau berasumsi tentang API, versi, atau fitur library eksternal. Wajib memprioritaskan pemanggilan tool **Context7** (untuk dokumentasi library) atau **web_search** (jika library tidak terdaftar) guna mengambil informasi terakurat sebelum menulis kode.
-7. **Sequential Thinking (Berpikir Sekuensial):** Sebelum menyelesaikan tugas kompleks, AI wajib mengaktifkan server **sequential-thinking** untuk menganalisis hipotesis, langkah kerja, dan validasi secara bertahap demi meminimalisir kesalahan logika koding.
-
-# DOX framework
-
-- DOX is highly performant AGENTS.md hierarchy installed here
-- Agent must follow DOX instructions across any edits
+Framework: betterimp-fw — DOX hierarchy + Caveman + Ponytail + Arugoflow + tooling MCP.
+Purpose: token savings maksimal, anti-regresi, kode minimalis.
 
 ## Core Contract
 
 - AGENTS.md files are binding work contracts for their subtrees
-- Work products, source materials, instructions, records, assets, and durable docs must stay understandable from the nearest applicable AGENTS.md plus every parent AGENTS.md above it
+- Work products, instructions, records, and assets must stay understandable from the nearest AGENTS.md plus every parent AGENTS.md above it
 
 ## Read Before Editing
 
-1. Read the root AGENTS.md.
-2. **Check State & Constraints:** Read the `## State & Constraints` section of this AGENTS.md. Identify any active constraints or fixed features (Anti-Regresi) that overlap with the target paths to ensure you do not violate rules or introduce regressions.
-3. Identify every file or folder you expect to touch.
-4. Walk from the repository root to each target path.
-5. Read every AGENTS.md found along each route.
-6. If a parent AGENTS.md lists a child AGENTS.md whose scope contains the path, read that child and continue from there.
-7. Use the nearest AGENTS.md as the local contract and parent docs for repo-wide rules.
-8. If docs conflict, the closer doc controls local work details, but no child doc may weaken DOX.
+1. Read this root AGENTS.md
+2. Identify every file/folder you expect to touch
+3. Walk from repository root to each target path
+4. Read every AGENTS.md found along each route
+5. If a parent AGENTS.md lists a child AGENTS.md whose scope contains the path, read that child and continue from there
+6. Use the nearest AGENTS.md as the local contract and parent docs for repo-wide rules
+7. If docs conflict, the closer doc controls local work details, but no child doc may weaken DOX
 
 Do not rely on memory. Re-read the applicable DOX chain in the current session before editing.
 
@@ -88,80 +25,77 @@ Do not rely on memory. Re-read the applicable DOX chain in the current session b
 Every meaningful change requires a DOX pass before the task is done.
 
 Update the closest owning AGENTS.md when a change affects:
-
 - purpose, scope, ownership, or responsibilities
 - durable structure, contracts, workflows, or operating rules
-- required inputs, outputs, permissions, constraints, side effects, or artifacts
+- required inputs, outputs, permissions, constraints, or side effects
 - user preferences about behavior, communication, process, organization, or quality
 - AGENTS.md creation, deletion, move, rename, or index contents
-- **Update State & Constraints:** Update `## State & Constraints` (Anti-Regresi / Strict Constraints) when a change refactors a feature, fixes a bug, or introduces a new structural/behavioral constraint.
 
-Update parent docs when parent-level structure, ownership, workflow, or child index changes. Update child docs when parent changes alter local rules. Remove stale or contradictory text immediately. Small edits that do not change behavior or contracts may leave docs unchanged, but the DOX pass still must happen.
+Update parent docs when parent-level structure, ownership, workflow, or child index changes. Update child docs when parent changes alter local rules. Remove stale or contradictory text immediately.
 
 ## Hierarchy
 
-- Root AGENTS.md is the DOX rail: project-wide instructions, global preferences, durable workflow rules, and the top-level Child DOX Index
-- Child AGENTS.md files own domain-specific instructions and their own Child DOX Index
-- Each parent explains what its direct children cover and what stays owned by the parent
+- Root AGENTS.md: project-wide instructions, global preferences, durable workflow rules, and top-level Child DOX Index
+- `skills/AGENTS.md` owns domain-specific instructions for skill files and its own Child DOX Index
 - The closer a doc is to the work, the more specific and practical it must be
 
-## Child Doc Shape
+## Local Contracts
 
-- Create a child AGENTS.md when a folder becomes a durable boundary with its own purpose, rules, responsibilities, workflow, materials, or quality standards
-- Work Guidance must reflect the current standards of the project or user instructions; if there are no specific standards or instructions yet, leave it empty
-- Verification must reflect an existing check; if no verification framework exists yet, leave it empty and update it when one exists
+- **Ponytail** ([`skills/ponytail/SKILL.md`](skills/ponytail/SKILL.md)): kode minimal first (YAGNI > stdlib > native > existing deps > one line)
+- **Caveman** ([`skills/caveman/SKILL.md`](skills/caveman/SKILL.md)): komunikasi sangat padat (drop filler/artikel/hedging), prosa Bahasa Indonesia singkat
+- **Arugoflow** ([`skills/arugoflow/SKILL.md`](skills/arugoflow/SKILL.md)): PRD/docs bebas jargon teknis, deskripsi UX fungsional, jangan overclaim
 
-Default section order:
-- Purpose
-- Ownership
-- Local Contracts
-- Work Guidance
-- Verification
-- Child DOX Index
+## Tooling
 
-## Style
+- **rtk**: semua command developer WAJIB lewat rtk (token compression 60-90%)
+- **codebase-memory-mcp**: cari symbol definitions via semantic graph
+- **sequential-thinking**: gunakan untuk tugas kompleks multi-step
+- **server-memory**: simpan preferensi lintas sesi
+- **Context7 / web_search**: akurasi API/library — jangan asumsi
 
-- Keep docs concise, current, and operational
-- Document stable contracts, not diary entries
-- Put broad rules in parent docs and concrete details in child docs
-- Prefer direct bullets with explicit names
-- Do not duplicate rules across many files unless each scope needs a local version
-- Delete stale notes instead of explaining history
-- Trim obvious statements, repeated rules, misplaced detail, and warnings for risks that no longer exist
+Jika salah satu MCP tidak tersedia: lanjutkan dengan fallback manual langsung.
 
-## Closeout
+## Verification (Generalisasi)
 
-1. Re-check changed paths against the DOX chain.
-2. Update nearest owning docs and any affected parents or children.
-3. Refresh every affected Child DOX Index.
-4. Remove stale or contradictory text.
-5. **Execute Verification:** Run the validation checks specified in the `## Verification` section of this AGENTS.md (e.g., `cargo check`, `cargo clippy`, checking YAGNI principles, and ensuring communication conforms to `"caveman skill dari path global skills"`).
-6. Report any docs intentionally left unchanged and why.
+Sesuaikan dengan ekosistem proyek:
+- Rust: `cargo check`, `cargo clippy`
+- Python: `ruff check`, `mypy .`
+- JS/TS: `tsc --noEmit`, `eslint .`
+- Go: `go vet ./...`
+- Lainnya: compiler/linter standar ekosistem
+
+WAJIB: audit YAGNI mandiri. Tidak ada kode spekulatif/dead code.
+
+## Pre-Completion Checklist
+
+SEBELUM `attempt_completion`, AI HARUS verifikasi:
+- [ ] rtk digunakan untuk semua command developer?
+- [ ] State & Constraints di [`STATE.md`](STATE.md) sudah dicek untuk constraints aktif?
+- [ ] DOX chain lengkap dibaca untuk path target?
+- [ ] Verification (compiler/linter) jalan tanpa error?
+- [ ] Tidak ada kode spekulatif / YAGNI violation?
+- [ ] Output komunikasi padat (Caveman style)?
 
 ## User Preferences
 
-When the user requests a durable behavior change, record it here or in the relevant child AGENTS.md.
-
-## State & Constraints
-
-*This section serves as the project's living registry of system state and boundaries. It is a binding part of the DOX workflow: it must be consulted during the **Read Before Editing** phase to avoid regressions, and it must be updated during the **Update After Editing** phase to document new fixes or constraints.*
-
-### 1. Refactored & Fixed (Anti-Regresi)
-*Format: [YYYY-MM-DD HH:MM] [Fitur]: Deskripsi singkat perbaikan. Jangan ubah/sentuh bagian [X] karena [Alasan].*
-- *(Belum ada catatan aktif)*
-
-### 2. Strict Constraints (Jangan Ubah)
-*Format: [YYYY-MM-DD HH:MM] [Nama Modul/File/Dep]: Aturan tegas pembatasan.*
-- *(Belum ada catatan aktif)*
-
-## Verification
-
-*This section defines the mandatory quality checks that must be successfully executed during the DOX **Closeout** phase before any task can be declared complete.*
-
-Sebelum menyatakan pekerjaan selesai, AI wajib memastikan:
-- Kode berhasil dikompilasi bersih (`cargo check`, `cargo clippy`) tanpa error/warning.
-- Tidak ada kode baru yang melanggar prinsip YAGNI (lakukan audit mandiri).
-- Penjelasan akhir ditulis dalam Bahasa Indonesia gaya Caveman yang sangat terkompresi.
+(Isi saat user meminta perubahan durable pada behavior/komunikasi/flow.)
 
 ## Child DOX Index
-None.
+
+| Path | Scope | Type |
+|------|-------|------|
+| [`skills/`](skills/) | Skill definitions — Ponytail, Caveman, Arugoflow, Ponytail-audit | 📂 Directory with [`AGENTS.md`](skills/AGENTS.md) |
+| [`.githooks/`](.githooks/) | Git hooks — AI compliance enforcement | 📂 Git hooks |
+| [`scripts/`](scripts/) | AI environment validation & sync scripts | 📂 Utility scripts |
+| [`.roo/rules-code/`](.roo/rules-code/) | Code mode specific rules | 📂 Mode rules |
+| [`.roo/rules-debug/`](.roo/rules-debug/) | Debug mode specific rules | 📂 Mode rules |
+| [`.roo/rules-architect/`](.roo/rules-architect/) | Architect mode specific rules | 📂 Mode rules |
+| [`.roo/rules-ask/`](.roo/rules-ask/) | Ask mode specific rules | 📂 Mode rules |
+| [`.github/workflows/`](.github/workflows/) | CI/CD compliance workflow | 📂 GitHub Actions |
+| [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | Copilot rules (symlink → AGENTS.md) | 🔗 Symlink |
+| [`.vscode/`](.vscode/) | VSCode tasks & settings | 📂 Editor config |
+| [`.cursorrules`](.cursorrules) | Cursor rules (symlink → AGENTS.md) | 🔗 Symlink |
+| [`CLAUDE.md`](CLAUDE.md) | Claude Code rules (symlink → AGENTS.md) | 🔗 Symlink |
+| [`.clinerules`](.clinerules) | Cline/Roo rules (symlink → AGENTS.md) | 🔗 Symlink |
+| [`STATE.md`](STATE.md) | Anti-regresi state & constraints | 📄 Project state |
+| [`COMPLIANCE_FIX.md`](COMPLIANCE_FIX.md) | Strategi & rekomendasi kepatuhan AI | 📄 Strategic doc |

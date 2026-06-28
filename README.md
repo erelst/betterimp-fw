@@ -59,3 +59,16 @@ Script ini akan mendeteksi lingkungan eksekusi secara cerdas dan melakukan tugas
 4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
 5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, dan **server-memory mcp** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
 6. **Tampilan ANSI:** Log proses dengan pewarnaan terminal interaktif.
+
+---
+
+## Self-Check
+
+Framework ini menyertakan tool validasi mandiri untuk memastikan AI tools tetap patuh terhadap aturan:
+
+- **`scripts/ai-enforce.sh`** — Validasi environment compliance di awal sesi AI. Cek STATE.md, AGENTS.md, rtk, symlinks, dan skill directories. Panggil dengan `sh scripts/ai-enforce.sh`.
+- **`.githooks/pre-commit`** — Pre-commit hook yang memvalidasi DOX chain integrity, STATE.md update, dan rtk usage setiap git commit. Aktifkan dengan `git config core.hooksPath .githooks`.
+- **`COMPLIANCE_FIX.md`** — Strategi lengkap kepatuhan untuk troubleshooting dan recovery.
+- **`STATE.md`** — Constraints anti-regresi yang wajib dicek sebelum modifikasi kode.
+
+Lihat [`AGENTS.md`](AGENTS.md) untuk DOX workflow lengkap dan Pre-Completion Checklist.

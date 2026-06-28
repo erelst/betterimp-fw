@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compliance Check",
+            "type": "shell",
+            "command": "sh ${workspaceFolder}/scripts/ai-enforce.sh",
+            "problemMatcher": [],
+            "group": "test"
+        },
+        {
+            "label": "Sync Skills (Pull)",
+            "type": "shell",
+            "command": "sh ${workspaceFolder}/scripts/sync-skills.sh pull",
+            "problemMatcher": [],
+            "group": "none"
+        },
+        {
+            "label": "Sync Skills (Push)",
+            "type": "shell",
+            "command": "sh ${workspaceFolder}/scripts/sync-skills.sh push",
+            "problemMatcher": [],
+            "group": "none"
+        }
+    ]
+}

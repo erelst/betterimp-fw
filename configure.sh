@@ -5,13 +5,6 @@
 
 set -e
 
-# Resolve the directory where this script is located
-# Using standard POSIX shell compliant path resolution
-SCRIPT_PATH="$0"
-case "$SCRIPT_PATH" in
-    /*) SCRIPT_DIR=$(dirname "$SCRIPT_PATH") ;;
-    *)  SCRIPT_DIR=$(pwd)/$(dirname "$SCRIPT_PATH") ;;
-esac
 
 # GitHub Raw URL for remote execution fallback
 RAW_GITHUB_URL="https://raw.githubusercontent.com/erelst/betterimp-fw/main"
@@ -42,6 +35,8 @@ log_error() {
     exit 1
 }
 
+ok() { printf "  ${GREEN}✓${NC} %s\n" "$*"; }
+
 # Helper untuk menyalin atau mengunduh AGENTS.md
 # Dengan smart merge: pertahankan State & Constraints + Child DOX Index proyek
 copy_or_download_agents() {
@@ -65,38 +60,53 @@ copy_or_download_agents() {
     # Jika proyek sudah punya AGENTS.md, merge bagian spesifik proyek
     if [ -f "AGENTS.md" ]; then
         python3 -c "
-import re, sys
-old_path = 'AGENTS.md'
-new_path = '$TMP_AGENTS'
-
-with open(old_path) as f:
-    old = f.read()
-with open(new_path) as f:
-    new = f.read()
-
-# Seksi yang harus dipertahankan dari proyek
-preserve_sections = ['## State & Constraints', '## User Preferences', '## Child DOX Index']
-
-for section in preserve_sections:
-    # Cari di file lama
-    old_match = re.search(re.escape(section) + r'\n.*?(?=\n## |\Z)', old, re.DOTALL)
-    if old_match:
-        old_content = old_match.group(0)
-        # Ganti di file baru, case-sensitive
-        pattern = re.escape(section) + r'\n.*?(?=\n## |\Z)'
-        if re.search(pattern, new, re.DOTALL):
-            new = re.sub(pattern, old_content, new, count=1, flags=re.DOTALL)
-
-with open('$TMP_AGENTS', 'w') as f:
-    f.write(new)
-print('[MERGE] Seksi proyek dipertahankan: State & Constraints, User Preferences, Child DOX Index')
-" 2>&1 || log_warning "Gagal melakukan merge AGENTS.md, gunakan template baru polos."
-    fi
-
-    # Pindahkan hasil merge ke AGENTS.md
-    cp "$TMP_AGENTS" ./AGENTS.md
-    rm -f "$TMP_AGENTS"
+    import re, sys, os, shutil
+    old_path = 'AGENTS.md'
+    new_path = '$TMP_AGENTS'
+    
+    with open(old_path) as f:
+        old = f.read()
+    with open(new_path) as f:
+        new = f.read()
+    
+    # Backup existing AGENTS.md before merge
+    shutil.copyfile(old_path, old_path + '.bak')
+    print('[BACKUP] AGENTS.md -> AGENTS.md.bak')
+    
+    # Seksi yang harus dipertahankan dari proyek
+    preserve_sections = ['## State & Constraints', '## User Preferences', '## Child DOX Index']
+    
+    for section in preserve_sections:
+        # Cari di file lama (dengan MULTILINE agar ^ anchor berfungsi)
+        old_match = re.search(r'^' + re.escape(section) + r'\n.*?(?=\n## |\Z)', old, re.DOTALL | re.MULTILINE)
+        if old_match:
+            old_content = old_match.group(0)
+            # Ganti di file baru, case-sensitive
+            pattern = r'^' + re.escape(section) + r'\n.*?(?=\n## |\Z)'
+            if re.search(pattern, new, re.DOTALL | re.MULTILINE):
+                new = re.sub(pattern, old_content, new, count=1, flags=re.DOTALL | re.MULTILINE)
+    
+    with open('$TMP_AGENTS', 'w') as f:
+        f.write(new)
+    print('[MERGE] Seksi proyek dipertahankan: State & Constraints, User Preferences, Child DOX Index')
+    " 2>&1 || log_warning "Gagal melakukan merge AGENTS.md, gunakan template baru polos."
+        fi
+    
+        # Atomic write: write to tmp, then rename
+        cp "$TMP_AGENTS" ./AGENTS.md.tmp
+        mv ./AGENTS.md.tmp ./AGENTS.md
+        rm -f "$TMP_AGENTS"
 }
+# Source directory — where this script and framework files live
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Target project directory (optional, default: current directory)
+TARGET_DIR="${1:-.}"
+cd "$TARGET_DIR" || {
+    echo "❌ Error: Cannot access target directory '$TARGET_DIR'"
+    exit 1
+}
+
 
 # 1. Konfigurasi AGENTS.md ke Proyek
 log_info "Mengonfigurasi AGENTS.md ke direktori saat ini..."
@@ -117,33 +127,81 @@ fi
 
 # Buat symbolic links kompatibilitas
 log_info "Membuat symbolic links untuk kompatibilitas (.cursorrules, .clinerules, & CLAUDE.md)..."
-ln -sf AGENTS.md .cursorrules
-ln -sf AGENTS.md .clinerules
-ln -sf AGENTS.md CLAUDE.md
+
+setup_symlink() {
+    _target="$1"
+    if [ -L "$_target" ]; then
+        if [ "$(readlink "$_target")" = "AGENTS.md" ]; then
+            log_info "Symlink $_target -> AGENTS.md: already exists"
+            return
+        else
+            log_warning "Symlink $_target points elsewhere -- updating"
+            ln -sf AGENTS.md "$_target"
+        fi
+    elif [ -f "$_target" ]; then
+        log_warning "$_target is a regular file -- backing up to $_target.bak"
+        cp "$_target" "$_target.bak"
+        ln -sf AGENTS.md "$_target"
+    else
+        ln -s AGENTS.md "$_target"
+        log_info "Symlink $_target -> AGENTS.md: created"
+    fi
+}
+
+setup_symlink ".cursorrules"
+setup_symlink ".clinerules"
+setup_symlink "CLAUDE.md"
 log_success "Symbolic links berhasil dibuat!"
 
+# Setup git hooks path
+log_info "Configuring git hooks..."
+git config core.hooksPath "$SCRIPT_DIR/.githooks" 2>/dev/null || log_warning "Not a git repository, hooks skipped"
+if [ -f "$SCRIPT_DIR/.githooks/pre-commit" ] && [ -x "$SCRIPT_DIR/.githooks/pre-commit" ]; then
+    log_info "Pre-commit hook ready"
+fi
+
+# Verify symlinks
+log_info "Verifying symlinks..."
+for link in .cursorrules CLAUDE.md .clinerules; do
+    if [ -L "$link" ] && [ "$(readlink "$link")" = "AGENTS.md" ]; then
+        ok " $link → AGENTS.md"
+    elif [ -f "$link" ]; then
+        log_warning " $link exists as regular file (should be symlink)"
+    else
+        log_warning " $link not found"
+    fi
+done
+
 # 2. Menginstal & Mengonfigurasi Skill Global
-log_info "Mengonfigurasi skill global (caveman, ponytail, ponytail-audit)..."
+log_info "Mengonfigurasi skill global (caveman, ponytail, ponytail-audit, arugoflow)..."
 AGENTS_SKILLS_DIR="$HOME/.agents/skills"
 ROO_SKILLS_DIR="$HOME/.roo/skills"
 
-mkdir -p "$AGENTS_SKILLS_DIR/caveman" "$AGENTS_SKILLS_DIR/ponytail" "$AGENTS_SKILLS_DIR/ponytail-audit"
-mkdir -p "$ROO_SKILLS_DIR/caveman" "$ROO_SKILLS_DIR/ponytail" "$ROO_SKILLS_DIR/ponytail-audit"
+mkdir -p "$AGENTS_SKILLS_DIR/caveman" "$AGENTS_SKILLS_DIR/ponytail" "$AGENTS_SKILLS_DIR/ponytail-audit" "$AGENTS_SKILLS_DIR/arugoflow"
+mkdir -p "$ROO_SKILLS_DIR/caveman" "$ROO_SKILLS_DIR/ponytail" "$ROO_SKILLS_DIR/ponytail-audit" "$ROO_SKILLS_DIR/arugoflow"
 
 # Fungsi pembantu untuk mengunduh/menyalin skill
 install_skill() {
     SKILL_NAME="$1"
     LOCAL_SKILL_FILE="$SCRIPT_DIR/skills/$SKILL_NAME/SKILL.md"
 
-    # Hapus file/symlink target terlebih dahulu
-    rm -f "$AGENTS_SKILLS_DIR/$SKILL_NAME/SKILL.md"
-    rm -f "$ROO_SKILLS_DIR/$SKILL_NAME/SKILL.md"
-
-    # Jika file ada di folder lokal framework, gunakan itu
+    # Jika file ada di folder lokal framework, gunakan itu (dengan diff/skip)
     if [ -f "$LOCAL_SKILL_FILE" ]; then
-        log_info "Menyalin skill '$SKILL_NAME' dari folder lokal..."
-        cp "$LOCAL_SKILL_FILE" "$AGENTS_SKILLS_DIR/$SKILL_NAME/SKILL.md"
-        cp "$LOCAL_SKILL_FILE" "$ROO_SKILLS_DIR/$SKILL_NAME/SKILL.md"
+        for target_dir in "$AGENTS_SKILLS_DIR" "$ROO_SKILLS_DIR"; do
+            target_file="$target_dir/$SKILL_NAME/SKILL.md"
+            if [ -f "$target_file" ]; then
+                if diff -q "$LOCAL_SKILL_FILE" "$target_file" >/dev/null 2>&1; then
+                    log_info "Skill $SKILL_NAME: already up-to-date"
+                else
+                    log_warning "Skill $SKILL_NAME: local version differs -- backup saved as SKILL.md.bak"
+                    cp "$target_file" "$target_file.bak"
+                    cp "$LOCAL_SKILL_FILE" "$target_file"
+                fi
+            else
+                cp "$LOCAL_SKILL_FILE" "$target_file"
+                log_info "Skill $SKILL_NAME: installed"
+            fi
+        done
     else
         # Jika tidak ada secara lokal (karena running remote), unduh dari repo betterimp-fw kita
         log_info "Mengunduh skill '$SKILL_NAME' dari GitHub..."
@@ -163,6 +221,7 @@ install_skill() {
 install_skill "caveman"
 install_skill "ponytail"
 install_skill "ponytail-audit"
+install_skill "arugoflow"
 
 log_success "Instalasi skill global selesai!"
 
@@ -215,7 +274,7 @@ export CODEBASE_MEMORY_PATH
 log_info "Mengonfigurasi MCP server untuk Antigravity, Cline, dan Roo Code..."
 if command -v python3 >/dev/null 2>&1; then
     python3 -c '
-import json, os
+import json, os, shutil
 def update_mcp(path):
     path = os.path.expanduser(path)
     if not os.path.exists(path):
@@ -223,8 +282,14 @@ def update_mcp(path):
         data = {"mcpServers": {}}
     else:
         try:
-            with open(path, "r") as f: data = json.load(f)
-        except Exception: data = {"mcpServers": {}}
+            with open(path, "r") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            data = {"mcpServers": {}}
+        except json.JSONDecodeError as e:
+            print(f"  [WARN] Invalid JSON in {path}: {e}. Backing up and resetting.")
+            shutil.copyfile(path, path + ".corrupted.bak")
+            data = {"mcpServers": {}}
     if "mcpServers" not in data: data["mcpServers"] = {}
     
     codebase_mem_cmd = os.environ.get("CODEBASE_MEMORY_PATH")
@@ -244,7 +309,11 @@ def update_mcp(path):
         "command": "npx",
         "args": ["-y", "@modelcontextprotocol/server-memory"]
     }
-    with open(path, "w") as f: json.dump(data, f, indent=2)
+    # Atomic write: write to tmp, then rename
+    tmp_path = path + ".tmp"
+    with open(tmp_path, "w") as f:
+        json.dump(data, f, indent=2)
+    os.replace(tmp_path, path)
 
 files = [
     "~/.gemini/antigravity/mcp_config.json",
@@ -347,6 +416,12 @@ automate_dox()
 '
 else
     log_warning "python3 tidak ditemukan. Otomatisasi Child DOX dilewati."
+fi
+
+# Final compliance check
+log_info "Running environment compliance check..."
+if [ -f "$SCRIPT_DIR/scripts/ai-enforce.sh" ] && [ -x "$SCRIPT_DIR/scripts/ai-enforce.sh" ]; then
+    sh "$SCRIPT_DIR/scripts/ai-enforce.sh" || log_warning "Some compliance checks failed — review and fix"
 fi
 
 log_success "Seluruh konfigurasi Betterimp Framework berhasil diselesaikan!"
