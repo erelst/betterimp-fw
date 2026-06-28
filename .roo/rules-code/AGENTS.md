@@ -12,5 +12,3 @@ Implementasi kode sesuai framework betterimp-fw.
 - Pre-Completion Checklist wajib dijalankan
 - rtk wajib untuk semua command developer
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.

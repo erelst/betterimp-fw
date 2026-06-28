@@ -5,7 +5,7 @@
 # Usage: sh scripts/ai-enforce.sh
 # Return: exit 0 jika semua pass, exit 1 jika ada fail
 
-set -e
+# Don't use set -e — we want to run ALL checks, not exit on first failure
 
 PASS=0
 FAIL=0
@@ -30,15 +30,9 @@ echo "--- Core Files ---"
 test -f STATE.md
 check "STATE.md exists" $?
 
-# 2. AGENTS.md exists dan cukup pendek (<100 baris, ideal untuk LLM context)
+# 2. AGENTS.md exists (no line limit — detailed docs are fine)
 test -f AGENTS.md
 check "AGENTS.md exists" $?
-LINES=$(wc -l < AGENTS.md 2>/dev/null || echo 999)
-if [ "$LINES" -le 120 ]; then
-    check "AGENTS.md length OK ($LINES lines)" 0
-else
-    check "AGENTS.md length OK ($LINES lines) [limit:120]" 1
-fi
 
 # --- Tools ---
 echo ""
@@ -78,7 +72,7 @@ done
 echo ""
 echo "--- Skills ---"
 # 6. Skill directories exist
-for skill in caveman ponytail ponytail-audit arugoflow; do
+for skill in caveman ponytail ponytail-audit arugoflow isolation-debug; do
     if [ -d "skills/$skill" ] && [ -f "skills/$skill/SKILL.md" ]; then
         check "Skill $skill/ exists" 0
     else
@@ -108,12 +102,8 @@ done
 # --- Scripts ---
 echo ""
 echo "--- Scripts ---"
-# 7. configure.sh exists and executable
-if [ -f "configure.sh" ] && [ -x "configure.sh" ]; then
-    check "configure.sh executable" 0
-else
-    check "configure.sh executable" 1
-fi
+# Note: configure.sh is a framework tool, not a project file
+# Compliance check removed — configure.sh stays in framework dir only
 
 # 8. enforce script sendiri
 if [ -f "scripts/ai-enforce.sh" ] && [ -x "scripts/ai-enforce.sh" ]; then

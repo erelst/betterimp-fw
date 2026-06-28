@@ -125,6 +125,21 @@ else
     log_success "Berhasil membuat AGENTS.md!"
 fi
 
+# Create STATE.md if missing
+if [ ! -f "STATE.md" ]; then
+    log_info "Membuat STATE.md..."
+    cat > STATE.md << 'EOF'
+# STATE.md — Project State & Constraints
+
+## Active Constraints
+(None yet — add constraints as project evolves)
+
+## Completed Tasks
+- Initial setup with betterimp-fw
+EOF
+    log_success "Berhasil membuat STATE.md!"
+fi
+
 # Buat symbolic links kompatibilitas
 log_info "Membuat symbolic links untuk kompatibilitas (.cursorrules, .clinerules, & CLAUDE.md)..."
 
@@ -177,12 +192,12 @@ for link in .cursorrules CLAUDE.md .clinerules; do
 done
 
 # 2. Menginstal & Mengonfigurasi Skill Global
-log_info "Mengonfigurasi skill global (caveman, ponytail, ponytail-audit, arugoflow)..."
+log_info "Mengonfigurasi skill global (caveman, ponytail, ponytail-audit, arugoflow, isolation-debug)..."
 AGENTS_SKILLS_DIR="$HOME/.agents/skills"
 ROO_SKILLS_DIR="$HOME/.roo/skills"
 
-mkdir -p "$AGENTS_SKILLS_DIR/caveman" "$AGENTS_SKILLS_DIR/ponytail" "$AGENTS_SKILLS_DIR/ponytail-audit" "$AGENTS_SKILLS_DIR/arugoflow"
-mkdir -p "$ROO_SKILLS_DIR/caveman" "$ROO_SKILLS_DIR/ponytail" "$ROO_SKILLS_DIR/ponytail-audit" "$ROO_SKILLS_DIR/arugoflow"
+mkdir -p "$AGENTS_SKILLS_DIR/caveman" "$AGENTS_SKILLS_DIR/ponytail" "$AGENTS_SKILLS_DIR/ponytail-audit" "$AGENTS_SKILLS_DIR/arugoflow" "$AGENTS_SKILLS_DIR/isolation-debug"
+mkdir -p "$ROO_SKILLS_DIR/caveman" "$ROO_SKILLS_DIR/ponytail" "$ROO_SKILLS_DIR/ponytail-audit" "$ROO_SKILLS_DIR/arugoflow" "$ROO_SKILLS_DIR/isolation-debug"
 
 # Fungsi pembantu untuk mengunduh/menyalin skill
 install_skill() {
@@ -226,12 +241,13 @@ install_skill "caveman"
 install_skill "ponytail"
 install_skill "ponytail-audit"
 install_skill "arugoflow"
+install_skill "isolation-debug"
 
 log_success "Instalasi skill global selesai!"
 
 # Copy skills to target project
 log_info "Copying skills to target project..."
-for skill in caveman ponytail ponytail-audit arugoflow; do
+for skill in caveman ponytail ponytail-audit arugoflow isolation-debug; do
     mkdir -p "./skills/$skill"
     if [ -f "$SCRIPT_DIR/skills/$skill/SKILL.md" ]; then
         cp "$SCRIPT_DIR/skills/$skill/SKILL.md" "./skills/$skill/SKILL.md"
@@ -319,14 +335,7 @@ else
     fi
 fi
 
-CODEBASE_MEMORY_PATH=""
-if command -v codebase-memory-mcp >/dev/null 2>&1; then
-    CODEBASE_MEMORY_PATH=$(command -v codebase-memory-mcp)
-elif [ -f "$HOME/.local/bin/codebase-memory-mcp" ]; then
-    CODEBASE_MEMORY_PATH="$HOME/.local/bin/codebase-memory-mcp"
-else
-    CODEBASE_MEMORY_PATH="$HOME/.local/bin/codebase-memory-mcp"
-fi
+CODEBASE_MEMORY_PATH=$(command -v codebase-memory-mcp) || CODEBASE_MEMORY_PATH="$HOME/.local/bin/codebase-memory-mcp"
 export CODEBASE_MEMORY_PATH
 
 # Konfigurasi MCP server untuk Antigravity, Cline, dan Roo Code
@@ -405,92 +414,16 @@ else
 fi
 
 
-# 5. Otomatisasi Child DOX Index
-log_info "Memulai otomatisasi dan sinkronisasi Child DOX Index..."
-if command -v python3 >/dev/null 2>&1; then
-    python3 -c '
-import os, re
-
-def automate_dox():
-    root_dir = os.getcwd()
-    root_agents_path = os.path.join(root_dir, "AGENTS.md")
-    if not os.path.exists(root_agents_path):
-        print("  [SKIP] AGENTS.md tidak ditemukan di root.")
-        return
-    
-    ignored_dirs = {".git", "target", ".cargo", "node_modules", ".gemini", ".next", ".svelte-kit", "dist", "build"}
-    
-    # Auto-initialize standard subdirectories if they exist but lack AGENTS.md
-    subdirs = []
-    for item in os.listdir(root_dir):
-        item_path = os.path.join(root_dir, item)
-        if os.path.isdir(item_path) and item not in ignored_dirs:
-            subdirs.append(item)
-            
-    standard_dirs = {"src", "public", "tests", "app", "components", "pages", "lib", "services", "api", "backend", "frontend", "style"}
-    
-    for sd in subdirs:
-        if sd.lower() in standard_dirs:
-            child_agents_path = os.path.join(root_dir, sd, "AGENTS.md")
-            if not os.path.exists(child_agents_path):
-                parent_rel = "../AGENTS.md"
-                template = f"""# DOX Child Module - {sd.upper()}
-
-- **Purpose:** Local rules and guidelines for the `{sd}` directory.
-- **Parent:** [Parent AGENTS.md]({parent_rel})
-
-## Local Rules
-- (Add specific rules for this module here)
-
-## State & Constraints
-- (Add local constraints here)
-"""
-                os.makedirs(os.path.dirname(child_agents_path), exist_ok=True)
-                with open(child_agents_path, "w") as f:
-                    f.write(template)
-                print(f"  [OK] Child AGENTS.md dibuat di: {sd}/AGENTS.md")
-
-    # Scan recursively for all child AGENTS.md files
-    child_links = []
-    for root, dirs, files in os.walk(root_dir):
-        # prune ignored dirs
-        dirs[:] = [d for d in dirs if d not in ignored_dirs]
-        for file in files:
-            if file == "AGENTS.md":
-                full_path = os.path.join(root, file)
-                rel_path = os.path.relpath(full_path, root_dir)
-                if rel_path != "AGENTS.md": # exclude root
-                    module_name = os.path.dirname(rel_path)
-                    child_links.append(f"- [{module_name.upper()}]({rel_path})")
-
-    # Update root AGENTS.md ## Child DOX Index section
-    if child_links:
-        child_links.sort()
-        index_content = "\n".join(child_links)
-    else:
-        index_content = "None."
-
-    with open(root_agents_path, "r") as f:
-        content = f.read()
-
-    if "## Child DOX Index" in content:
-        parts = content.split("## Child DOX Index")
-        parts[1] = "\n" + index_content + "\n"
-        new_content = "## Child DOX Index".join(parts)
-        with open(root_agents_path, "w") as f:
-            f.write(new_content)
-        print("  [OK] Root AGENTS.md Child DOX Index berhasil diperbarui!")
-
-automate_dox()
-'
-else
-    log_warning "python3 tidak ditemukan. Otomatisasi Child DOX dilewati."
-fi
-
-# Final compliance check
+# Final compliance check (run from target project directory)
 log_info "Running environment compliance check..."
-if [ -f "$SCRIPT_DIR/scripts/ai-enforce.sh" ] && [ -x "$SCRIPT_DIR/scripts/ai-enforce.sh" ]; then
-    sh "$SCRIPT_DIR/scripts/ai-enforce.sh" || log_warning "Some compliance checks failed — review and fix"
+cd "$TARGET_DIR" || {
+    log_warning "Cannot access target directory for compliance check"
+    exit 1
+}
+if [ -f "./scripts/ai-enforce.sh" ] && [ -x "./scripts/ai-enforce.sh" ]; then
+    sh "./scripts/ai-enforce.sh" || log_warning "Some compliance checks failed — review and fix"
+else
+    log_warning "ai-enforce.sh not found in target project — skipping compliance check"
 fi
 
 log_success "Seluruh konfigurasi Betterimp Framework berhasil diselesaikan!"

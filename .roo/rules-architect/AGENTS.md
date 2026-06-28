@@ -11,5 +11,3 @@ Perencanaan dan desain arsitektur.
 - Baca source code sebelum buat desain
 - PRD = as-built documentation, bukan spek ideal
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.

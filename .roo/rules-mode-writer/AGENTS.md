@@ -9,5 +9,3 @@ Membuat dan mengedit custom mode untuk Zoo Code / Roo Code.
 - Test mode description di environment target
 - Dokumentasikan slug, description, dan file locations
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.

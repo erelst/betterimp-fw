@@ -9,11 +9,3 @@ jobs:
       - name: Run compliance validator
         run: sh scripts/ai-enforce.sh
         shell: bash
-      - name: Check DOX chain integrity
-        run: |
-          if [ -f AGENTS.md ]; then
-            echo "✅ Root AGENTS.md exists"
-          fi
-          if [ -d skills ] && [ -f skills/AGENTS.md ]; then
-            echo "✅ skills/AGENTS.md exists"
-          fi

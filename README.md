@@ -19,7 +19,11 @@ betterimp-fw/
 ├── configure.sh     # Script POSIX sh untuk instalasi otomatis & penyalinan DOX
 ├── README.md        # Dokumen panduan ini
 └── skills/          # Berisi skill global terpilih
+    ├── arugoflow/
+    │   └── SKILL.md
     ├── caveman/
+    │   └── SKILL.md
+    ├── isolation-debug/
     │   └── SKILL.md
     ├── ponytail/
     │   └── SKILL.md
@@ -55,7 +59,7 @@ sh ~/NewRust/betterimp-fw/configure.sh
 Script ini akan mendeteksi lingkungan eksekusi secara cerdas dan melakukan tugas berikut:
 1. **Menyalin/Mengunduh `AGENTS.md`:** Menyalin dari lokal (jika ada) atau mengunduh dari GitHub ke root proyek Anda.
 2. **Membuat Tautan Kompatibilitas:** Membuat symlink `.cursorrules`, `.clinerules`, dan `CLAUDE.md` ke `AGENTS.md`.
-3. **Menginstal Skill Global:** Mengonfigurasi skill `caveman`, `ponytail`, dan `ponytail-audit` ke `~/.agents/skills` dan `~/.roo/skills`.
+3. **Menginstal Skill Global:** Mengonfigurasi skill `arugoflow`, `caveman`, `isolation-debug`, `ponytail`, dan `ponytail-audit` ke `~/.agents/skills` dan `~/.roo/skills`.
 4. **Menginstal Tools Inti:** Mengunduh dan menginstal **rtk** dan **codebase-memory-mcp** secara otomatis langsung dari repositori aslinya jika belum terinstal.
 5. **Mengonfigurasi MCP Server:** Mengonfigurasi server MCP **codebase-memory-mcp**, **sequential-thinking**, dan **server-memory mcp** secara otomatis pada **Antigravity**, **Cline**, dan **Roo Code** (termasuk VSCodium).
 6. **Tampilan ANSI:** Log proses dengan pewarnaan terminal interaktif.
@@ -68,7 +72,6 @@ Framework ini menyertakan tool validasi mandiri untuk memastikan AI tools tetap 
 
 - **`scripts/ai-enforce.sh`** — Validasi environment compliance di awal sesi AI. Cek STATE.md, AGENTS.md, rtk, symlinks, dan skill directories. Panggil dengan `sh scripts/ai-enforce.sh`.
 - **`.githooks/pre-commit`** — Pre-commit hook yang memvalidasi DOX chain integrity, STATE.md update, dan rtk usage setiap git commit. Aktifkan dengan `git config core.hooksPath .githooks`.
-- **`COMPLIANCE_FIX.md`** — Strategi lengkap kepatuhan untuk troubleshooting dan recovery.
 - **`STATE.md`** — Constraints anti-regresi yang wajib dicek sebelum modifikasi kode.
 
 Lihat [`AGENTS.md`](AGENTS.md) untuk DOX workflow lengkap dan Pre-Completion Checklist.

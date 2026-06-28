@@ -9,5 +9,3 @@ Menyelidiki dan memahami codebase secara mendalam.
 - Dokumentasi temuan dengan referensi file path
 - Output dalam format yang bisa dipahami mode lain (code, architect)
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.

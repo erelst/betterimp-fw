@@ -10,5 +10,3 @@ Mengajar konsep programming dan memandu learning session.
 - Tanya balik untuk memastikan pemahaman
 - Jangan beri jawaban langsung — bimbing step-by-step
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.

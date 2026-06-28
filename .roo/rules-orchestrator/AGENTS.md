@@ -15,5 +15,3 @@ Koordinasi workflow multi-mode — delegasi task ke mode spesialis.
 - Pastikan semua subtask selesai
 - Pastikan DOX chain diupdate jika ada perubahan struktural
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.

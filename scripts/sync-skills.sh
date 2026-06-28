@@ -19,7 +19,7 @@ echo "  Project: $SKILLS_DIR"
 echo ""
 
 # Map of skill directories to sync
-SKILLS="caveman ponytail ponytail-audit arugoflow"
+SKILLS="caveman ponytail ponytail-audit arugoflow isolation-debug"
 
 for skill in $SKILLS; do
     project_file="$SKILLS_DIR/$skill/SKILL.md"

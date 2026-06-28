@@ -92,7 +92,7 @@ check "AGENTS.md files: $CHILD_DOX_COUNT (root + child)" 0
 # ATURAN 5: Apakah skills lengkap?
 # ==========================================
 echo "--- Aturan 5: Skills ---"
-for skill in arugoflow caveman ponytail ponytail-audit; do
+for skill in arugoflow caveman ponytail ponytail-audit isolation-debug; do
     if [ -f "skills/$skill/SKILL.md" ]; then
         check "Skill $skill: ada" 0
     else

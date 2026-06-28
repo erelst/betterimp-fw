@@ -15,5 +15,3 @@ Audit code untuk security vulnerabilities dan best practices.
 - Cek input validation di trust boundary
 - Cek dependency dengan known vulnerabilities
 
-## child DOX Index
-Referensi ke root AGENTS.md untuk aturan lengkap.
