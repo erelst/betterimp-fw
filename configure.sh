@@ -60,35 +60,35 @@ copy_or_download_agents() {
     # Jika proyek sudah punya AGENTS.md, merge bagian spesifik proyek
     if [ -f "AGENTS.md" ]; then
         python3 -c "
-    import re, sys, os, shutil
-    old_path = 'AGENTS.md'
-    new_path = '$TMP_AGENTS'
-    
-    with open(old_path) as f:
-        old = f.read()
-    with open(new_path) as f:
-        new = f.read()
-    
-    # Backup existing AGENTS.md before merge
-    shutil.copyfile(old_path, old_path + '.bak')
-    print('[BACKUP] AGENTS.md -> AGENTS.md.bak')
-    
-    # Seksi yang harus dipertahankan dari proyek
-    preserve_sections = ['## State & Constraints', '## User Preferences', '## Child DOX Index']
-    
-    for section in preserve_sections:
-        # Cari di file lama (dengan MULTILINE agar ^ anchor berfungsi)
-        old_match = re.search(r'^' + re.escape(section) + r'\n.*?(?=\n## |\Z)', old, re.DOTALL | re.MULTILINE)
-        if old_match:
-            old_content = old_match.group(0)
-            # Ganti di file baru, case-sensitive
-            pattern = r'^' + re.escape(section) + r'\n.*?(?=\n## |\Z)'
-            if re.search(pattern, new, re.DOTALL | re.MULTILINE):
-                new = re.sub(pattern, old_content, new, count=1, flags=re.DOTALL | re.MULTILINE)
-    
-    with open('$TMP_AGENTS', 'w') as f:
-        f.write(new)
-    print('[MERGE] Seksi proyek dipertahankan: State & Constraints, User Preferences, Child DOX Index')
+import re, sys, os, shutil
+old_path = 'AGENTS.md'
+new_path = '$TMP_AGENTS'
+
+with open(old_path) as f:
+    old = f.read()
+with open(new_path) as f:
+    new = f.read()
+
+# Backup existing AGENTS.md before merge
+shutil.copyfile(old_path, old_path + '.bak')
+print('[BACKUP] AGENTS.md -> AGENTS.md.bak')
+
+# Seksi yang harus dipertahankan dari proyek
+preserve_sections = ['## State & Constraints', '## User Preferences', '## Child DOX Index']
+
+for section in preserve_sections:
+    # Cari di file lama (dengan MULTILINE agar ^ anchor berfungsi)
+    old_match = re.search(r'^' + re.escape(section) + r'\n.*?(?=\n## |\Z)', old, re.DOTALL | re.MULTILINE)
+    if old_match:
+        old_content = old_match.group(0)
+        # Ganti di file baru, case-sensitive
+        pattern = r'^' + re.escape(section) + r'\n.*?(?=\n## |\Z)'
+        if re.search(pattern, new, re.DOTALL | re.MULTILINE):
+            new = re.sub(pattern, old_content, new, count=1, flags=re.DOTALL | re.MULTILINE)
+
+with open('$TMP_AGENTS', 'w') as f:
+    f.write(new)
+print('[MERGE] Seksi proyek dipertahankan: State & Constraints, User Preferences, Child DOX Index')
     " 2>&1 || log_warning "Gagal melakukan merge AGENTS.md, gunakan template baru polos."
         fi
     
@@ -155,8 +155,12 @@ log_success "Symbolic links berhasil dibuat!"
 
 # Setup git hooks path
 log_info "Configuring git hooks..."
-git config core.hooksPath "$SCRIPT_DIR/.githooks" 2>/dev/null || log_warning "Not a git repository, hooks skipped"
-if [ -f "$SCRIPT_DIR/.githooks/pre-commit" ] && [ -x "$SCRIPT_DIR/.githooks/pre-commit" ]; then
+if git config core.hooksPath .githooks 2>/dev/null; then
+    log_info "Git hooks path configured"
+else
+    log_warning "Not a git repository or git not available — hooks skipped"
+fi
+if [ -f "$SCRIPT_DIR/.githooks/pre-commit" ]; then
     log_info "Pre-commit hook ready"
 fi
 
@@ -224,6 +228,79 @@ install_skill "ponytail-audit"
 install_skill "arugoflow"
 
 log_success "Instalasi skill global selesai!"
+
+# Copy skills to target project
+log_info "Copying skills to target project..."
+for skill in caveman ponytail ponytail-audit arugoflow; do
+    mkdir -p "./skills/$skill"
+    if [ -f "$SCRIPT_DIR/skills/$skill/SKILL.md" ]; then
+        cp "$SCRIPT_DIR/skills/$skill/SKILL.md" "./skills/$skill/SKILL.md"
+        log_info "  Skill $skill: copied to project"
+    fi
+done
+if [ -f "$SCRIPT_DIR/skills/AGENTS.md" ]; then
+    cp "$SCRIPT_DIR/skills/AGENTS.md" "./skills/AGENTS.md"
+    log_info "  Skills AGENTS.md: copied to project"
+fi
+
+# Copy scripts to target project
+log_info "Copying scripts to target project..."
+mkdir -p "./scripts"
+for script in ai-enforce.sh audit-compliance.sh sync-skills.sh; do
+    if [ -f "$SCRIPT_DIR/scripts/$script" ]; then
+        cp "$SCRIPT_DIR/scripts/$script" "./scripts/$script"
+        chmod +x "./scripts/$script"
+        log_info "  Script $script: copied"
+    fi
+done
+
+# Copy .githooks to target project
+log_info "Copying .githooks to target project..."
+if [ -d "$SCRIPT_DIR/.githooks" ]; then
+    mkdir -p "./.githooks"
+    cp -r "$SCRIPT_DIR/.githooks/"* "./.githooks/"
+    if [ -f "./.githooks/pre-commit" ]; then
+        chmod +x "./.githooks/pre-commit"
+    fi
+    log_info "  .githooks: copied"
+fi
+
+# Copy .roo rules
+if [ -d "$SCRIPT_DIR/.roo" ]; then
+    cp -r "$SCRIPT_DIR/.roo" "./"
+    log_info "  .roo/rules-*: copied"
+fi
+
+# Copy .vscode config
+if [ -d "$SCRIPT_DIR/.vscode" ]; then
+    cp -r "$SCRIPT_DIR/.vscode" "./"
+    log_info "  .vscode: copied"
+fi
+
+# Copy .github config
+if [ -d "$SCRIPT_DIR/.github" ]; then
+    mkdir -p "./.github"
+    cp -r "$SCRIPT_DIR/.github/"* "./.github/"
+    log_info "  .github: copied"
+fi
+
+# Copy configure.sh to target project
+log_info "Copying configure.sh to target project..."
+if [ -f "$SCRIPT_DIR/configure.sh" ]; then
+    cp "$SCRIPT_DIR/configure.sh" "./configure.sh"
+    chmod +x "./configure.sh"
+    log_info "  configure.sh: copied to project"
+fi
+# Copy README.md
+if [ -f "$SCRIPT_DIR/README.md" ]; then
+    cp "$SCRIPT_DIR/README.md" "./README.md"
+    log_info "  README.md: copied to project"
+fi
+# Copy COMPLIANCE_FIX.md
+if [ -f "$SCRIPT_DIR/COMPLIANCE_FIX.md" ]; then
+    cp "$SCRIPT_DIR/COMPLIANCE_FIX.md" "./COMPLIANCE_FIX.md"
+    log_info "  COMPLIANCE_FIX.md: copied to project"
+fi
 
 # 3. Menginstal RTK (Rust Token Killer)
 log_info "Memeriksa status instalasi RTK..."
@@ -296,19 +373,29 @@ def update_mcp(path):
     if not codebase_mem_cmd:
         codebase_mem_cmd = os.path.expanduser("~/.local/bin/codebase-memory-mcp")
         
-    data["mcpServers"]["codebase-memory"] = {
-        "command": codebase_mem_cmd,
-        "args": [],
-        "env": {"CODEBASE_MEMORY_LOG_LEVEL": "info"}
+    new_servers = {
+        "codebase-memory": {
+            "command": codebase_mem_cmd,
+            "args": [],
+            "env": {"CODEBASE_MEMORY_LOG_LEVEL": "info"}
+        },
+        "sequential-thinking": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+        },
+        "memory": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-memory"]
+        }
     }
-    data["mcpServers"]["sequential-thinking"] = {
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    }
-    data["mcpServers"]["memory"] = {
-        "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-memory"]
-    }
+    
+    for name, config in new_servers.items():
+        if name in data.get("mcpServers", {}):
+            existing = data["mcpServers"][name]
+            for key, value in config.items():
+                existing[key] = value
+        else:
+            data["mcpServers"][name] = config
     # Atomic write: write to tmp, then rename
     tmp_path = path + ".tmp"
     with open(tmp_path, "w") as f:
