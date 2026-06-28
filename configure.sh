@@ -284,24 +284,6 @@ if [ -d "$SCRIPT_DIR/.github" ]; then
     log_info "  .github: copied"
 fi
 
-# Copy configure.sh to target project
-log_info "Copying configure.sh to target project..."
-if [ -f "$SCRIPT_DIR/configure.sh" ]; then
-    cp "$SCRIPT_DIR/configure.sh" "./configure.sh"
-    chmod +x "./configure.sh"
-    log_info "  configure.sh: copied to project"
-fi
-# Copy README.md
-if [ -f "$SCRIPT_DIR/README.md" ]; then
-    cp "$SCRIPT_DIR/README.md" "./README.md"
-    log_info "  README.md: copied to project"
-fi
-# Copy COMPLIANCE_FIX.md
-if [ -f "$SCRIPT_DIR/COMPLIANCE_FIX.md" ]; then
-    cp "$SCRIPT_DIR/COMPLIANCE_FIX.md" "./COMPLIANCE_FIX.md"
-    log_info "  COMPLIANCE_FIX.md: copied to project"
-fi
-
 # 3. Menginstal RTK (Rust Token Killer)
 log_info "Memeriksa status instalasi RTK..."
 if command -v rtk >/dev/null 2>&1; then

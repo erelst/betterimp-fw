@@ -1,0 +1,13 @@
+# betterimp-fw — optional framework files
+# Hapus komen jika tidak mau file ini masuk git history
+
+# scripts/
+# skills/
+# .githooks/
+# .vscode/
+# .github/
+
+# File installer (hanya perlu di betterimp-fw, bukan di target proyek)
+# configure.sh
+# README.md
+# COMPLIANCE_FIX.md

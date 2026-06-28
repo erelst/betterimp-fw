@@ -91,6 +91,11 @@ SEBELUM `attempt_completion`, AI HARUS verifikasi:
 | [`.roo/rules-debug/`](.roo/rules-debug/) | Debug mode specific rules | 📂 Mode rules |
 | [`.roo/rules-architect/`](.roo/rules-architect/) | Architect mode specific rules | 📂 Mode rules |
 | [`.roo/rules-ask/`](.roo/rules-ask/) | Ask mode specific rules | 📂 Mode rules |
+| [`.roo/rules-project-research/`](.roo/rules-project-research/) | Project Research mode rules | 📂 Mode rules |
+| [`.roo/rules-orchestrator/`](.roo/rules-orchestrator/) | Orchestrator mode rules | 📂 Mode rules |
+| [`.roo/rules-coding-teacher/`](.roo/rules-coding-teacher/) | Coding Teacher mode rules | 📂 Mode rules |
+| [`.roo/rules-mode-writer/`](.roo/rules-mode-writer/) | Mode Writer mode rules | 📂 Mode rules |
+| [`.roo/rules-security-review/`](.roo/rules-security-review/) | Security Reviewer mode rules | 📂 Mode rules |
 | [`.github/workflows/`](.github/workflows/) | CI/CD compliance workflow | 📂 GitHub Actions |
 | [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | Copilot rules (symlink → AGENTS.md) | 🔗 Symlink |
 | [`.vscode/`](.vscode/) | VSCode tasks & settings | 📂 Editor config |
