@@ -31,7 +31,7 @@ MUST verify each item before attempt_completion (behavior + state):
 
 ## Skills (load on behavior/state)
 
-Skills load when the task BEHAVIOR or current STATE matches, not only on exact keywords. Detect intent from context.
+Skills load when the task BEHAVIOR or current STATE matches, not only on exact keywords. Detect intent from context. Thinking state activates all matching skills — let context decide.
 
 | When behavior/state is → | Load | Instructions in |
 |-------------------------|------|-----------------|
@@ -42,6 +42,8 @@ Skills load when the task BEHAVIOR or current STATE matches, not only on exact k
 | Debugging — errors occurring or root cause unknown. | Isolation-debug | [skills/isolation-debug/SKILL.md](skills/isolation-debug/SKILL.md) |
 
 ## MCP Tools (use on behavior/state)
+
+MCPs activate based on behavior/state. Thinking state primes all MCPs for potential use — let behavior+state determine which.
 
 | When behavior/state is → | Use | Purpose |
 |--------------------------|-----|---------|
