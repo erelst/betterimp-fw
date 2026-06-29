@@ -45,8 +45,9 @@ Skills load when the task BEHAVIOR or current STATE matches, not only on exact k
 
 | When behavior/state is → | Use | Purpose |
 |--------------------------|-----|---------|
-| Need library/framework API info, code examples, or setup guidance. State: unfamiliar API, guessing would be wrong. | **context7-mcp** | Look up real API docs before writing code |
-| Need to understand code structure, find symbol definitions, trace call chains. State: editing unfamiliar code or navigating large codebase. | **codebase-memory-mcp** | Semantic codebase navigation |
+| Need library/framework API info, code examples, or setup guidance. State: unfamiliar API, syntax uncertain, or AI's built-in knowledge may be inaccurate or stale. | **context7-mcp** | Look up real API docs before writing code |
+| Need current/web-searchable info about errors, warnings, compatibility, or versions. State: context7 unavailable or insufficient, or issue needs real-time data (runtime errors, package versions, known issues). | **ddg-search** | Web search for accurate up-to-date info. Fallback when context7 can't answer. |
+| Need to understand code structure, search or read files, find symbol definitions, trace call chains. State: editing unfamiliar code or navigating large codebase. | **codebase-memory-mcp** | Semantic codebase navigation |
 | Task is complex, multi-step, or requires deep analysis. State: logic is tangled, steps are interdependent, or root cause is unclear. | **sequential-thinking** | Break down reasoning step by step |
 | User stated a durable preference, decision, or fact. State: should persist across sessions, not just this conversation. | **server-memory** | Store and retrieve long-term project facts |
 
