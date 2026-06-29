@@ -41,6 +41,15 @@ Skills load when the task BEHAVIOR or current STATE matches, not only on exact k
 | Auditing codebase — over-engineering or bloat suspected. State: needs cleanup pass. | Ponytail-audit | [skills/ponytail-audit/SKILL.md](skills/ponytail-audit/SKILL.md) |
 | Debugging — errors occurring or root cause unknown. | Isolation-debug | [skills/isolation-debug/SKILL.md](skills/isolation-debug/SKILL.md) |
 
+## MCP Tools (use on behavior/state)
+
+| When behavior/state is → | Use | Purpose |
+|--------------------------|-----|---------|
+| Need library/framework API info, code examples, or setup guidance. State: unfamiliar API, guessing would be wrong. | **context7-mcp** | Look up real API docs before writing code |
+| Need to understand code structure, find symbol definitions, trace call chains. State: editing unfamiliar code or navigating large codebase. | **codebase-memory-mcp** | Semantic codebase navigation |
+| Task is complex, multi-step, or requires deep analysis. State: logic is tangled, steps are interdependent, or root cause is unclear. | **sequential-thinking** | Break down reasoning step by step |
+| User stated a durable preference, decision, or fact. State: should persist across sessions, not just this conversation. | **server-memory** | Store and retrieve long-term project facts |
+
 ## Child DOX Index
 
 | Path | Scope |
