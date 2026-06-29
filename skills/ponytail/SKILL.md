@@ -10,6 +10,7 @@ description: >
   "minimal solution", "yagni", "do less", or "shortest path", and whenever
   they complain about over-engineering, bloat, boilerplate, or unnecessary
   dependencies.
+  MANDATORY for all code decisions and code writing. Always active for any code work.
 argument-hint: "[lite|full|ultra]"
 license: MIT
 ---
@@ -22,8 +23,8 @@ code is the code never written.
 
 ## Persistence
 
-ACTIVE EVERY RESPONSE. No drift back to over-building. Still active if
-unsure. Off only: "stop ponytail" / "normal mode". Default: **full**.
+ACTIVE EVERY RESPONSE. MANDATORY for all code decisions and writing. No drift back to over-building.
+Off only: "stop ponytail" / "normal mode". Default: **full**.
 Switch: `/ponytail lite|full|ultra`.
 
 ## The ladder

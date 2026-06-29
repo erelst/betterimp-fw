@@ -140,9 +140,23 @@ EOF
     log_success "Berhasil membuat STATE.md!"
 fi
 
-# Buat symbolic links kompatibilitas
-log_info "Membuat symbolic links untuk kompatibilitas (.cursorrules, .clinerules, & CLAUDE.md)..."
+# Prompt user for AI tool selection (single input)
+echo ""
+echo "=== Pilih AI Tools yang Akan Dikonfigurasi ==="
+echo "Pisahkan dengan koma, atau ketik 'all' untuk semua."
+echo "  claude-code  — Symlink CLAUDE.md → AGENTS.md"
+echo "  cursor       — Symlink .cursorrules → AGENTS.md"
+echo "  cline        — Symlink .clinerules → AGENTS.md"
+echo "  roo          — Symlink .clinerules + symlink .roo/"
+printf "Pilihan [all]: "
+read AI_TOOLS
+AI_TOOLS="${AI_TOOLS:-all}"
 
+# Helper: check if tool is selected
+has_tool() { echo "$AI_TOOLS" | grep -iqE "$1|all"; }
+has_not_all() { echo "$AI_TOOLS" | grep -ivq "all"; }
+
+# Helper untuk setup symlink
 setup_symlink() {
     _target="$1"
     if [ -L "$_target" ]; then
@@ -163,10 +177,44 @@ setup_symlink() {
     fi
 }
 
-setup_symlink ".cursorrules"
-setup_symlink ".clinerules"
-setup_symlink "CLAUDE.md"
-log_success "Symbolic links berhasil dibuat!"
+# Create symlinks only for selected tools
+if has_tool "claude-code"; then
+    setup_symlink "CLAUDE.md"
+fi
+if has_tool "cursor"; then
+    setup_symlink ".cursorrules"
+fi
+if has_tool "cline|roo"; then
+    setup_symlink ".clinerules"
+fi
+
+# .roo directory — symlink instead of copy
+if has_tool "roo"; then
+    if [ -d "$SCRIPT_DIR/.roo" ]; then
+        if [ -L ".roo" ]; then
+            log_info ".roo symlink: already exists"
+        elif [ ! -e ".roo" ]; then
+            ln -s "$SCRIPT_DIR/.roo" ".roo"
+            log_info ".roo: symlink created"
+        else
+            log_warning ".roo directory exists — backing up and symlinking"
+            mv .roo .roo.bak
+            ln -sf "$SCRIPT_DIR/.roo" ".roo"
+        fi
+    fi
+fi
+
+# Verify symlinks for selected tools
+log_info "Verifying symlinks..."
+for link in .cursorrules CLAUDE.md .clinerules; do
+    if [ -L "$link" ] && [ "$(readlink "$link")" = "AGENTS.md" ]; then
+        ok " $link → AGENTS.md"
+    elif [ -f "$link" ]; then
+        log_warning " $link exists as regular file (should be symlink)"
+    else
+        log_warning " $link not found"
+    fi
+done
 
 # Setup git hooks path
 log_info "Configuring git hooks..."
@@ -178,18 +226,6 @@ fi
 if [ -f "$SCRIPT_DIR/.githooks/pre-commit" ]; then
     log_info "Pre-commit hook ready"
 fi
-
-# Verify symlinks
-log_info "Verifying symlinks..."
-for link in .cursorrules CLAUDE.md .clinerules; do
-    if [ -L "$link" ] && [ "$(readlink "$link")" = "AGENTS.md" ]; then
-        ok " $link → AGENTS.md"
-    elif [ -f "$link" ]; then
-        log_warning " $link exists as regular file (should be symlink)"
-    else
-        log_warning " $link not found"
-    fi
-done
 
 # 2. Menginstal & Mengonfigurasi Skill Global
 log_info "Mengonfigurasi skill global (caveman, ponytail, ponytail-audit, arugoflow, isolation-debug)..."
@@ -281,20 +317,14 @@ if [ -d "$SCRIPT_DIR/.githooks" ]; then
     log_info "  .githooks: copied"
 fi
 
-# Copy .roo rules
-if [ -d "$SCRIPT_DIR/.roo" ]; then
-    cp -r "$SCRIPT_DIR/.roo" "./"
-    log_info "  .roo/rules-*: copied"
-fi
-
-# Copy .vscode config
-if [ -d "$SCRIPT_DIR/.vscode" ]; then
+# Copy .vscode config (editor-agnostic — always copied if cursor selected)
+if has_tool "cursor" && [ -d "$SCRIPT_DIR/.vscode" ]; then
     cp -r "$SCRIPT_DIR/.vscode" "./"
     log_info "  .vscode: copied"
 fi
 
-# Copy .github config
-if [ -d "$SCRIPT_DIR/.github" ]; then
+# Copy .github config (CI/CD — only if any tool is selected)
+if [ -n "$AI_TOOLS" ] && [ -d "$SCRIPT_DIR/.github" ]; then
     mkdir -p "./.github"
     cp -r "$SCRIPT_DIR/.github/"* "./.github/"
     log_info "  .github: copied"
