@@ -2,31 +2,31 @@
 
 Global AI contract. Anti-regression, minimal code, efficient communication.
 
-## Workflow (MUST follow exactly)
+## Workflow (MUST follow exactly — behavior + state)
 
 ### Phase A — Before first edit this session
-1. Read this entire file.
-2. Open [STATE.md](STATE.md). IF `## Active Constraints` lists anything overlapping your target paths, MUST adjust approach to respect them.
-3. Walk DOX chain: for each target path, read every AGENTS.md from root to the target's directory. Nearest AGENTS.md to target controls local details.
+1. Read this entire file and [STATE.md](STATE.md). Note current state and active constraints.
+2. IF `## Active Constraints` lists anything overlapping target paths: MUST adjust approach.
+3. Walk DOX chain: for each target path, read every AGENTS.md from root to target's directory. Cross-reference with STATE.md constraints. Nearest AGENTS.md controls local details.
 
 ### Phase B — After file changes
-1. Locate nearest AGENTS.md in the directory tree above each changed file.
-2. Update it IF any of these changed: purpose/scope/ownership, structure/contracts/workflows, constraints/permissions, user preferences, AGENTS.md files themselves.
-3. IF change refactors a feature or adds/modifies constraints: append a row to STATE.md `## Entry Log`.
+1. Locate nearest AGENTS.md above each changed file. Check STATE.md for constraints on modified paths.
+2. Update nearest AGENTS.md IF any changed: purpose/scope/ownership, structure/contracts/workflows, constraints/permissions, user preferences, AGENTS.md files themselves.
+3. STATE.md: create if missing, OR append a row to `## Entry Log` when refactoring features or modifying constraints.
 4. Remove stale/contradictory text immediately.
 
 ### Phase C — Before attempt_completion
-Verify ALL items in [Pre-Completion Checklist] below.
+Verify ALL items in [Pre-Completion Checklist] below. Check STATE.md one last time for any new active constraints.
 
 ## Pre-Completion Checklist
 
-MUST verify each item before attempt_completion:
-- [ ] **Compiler/linter clean**: run `cargo check` (Rust), `tsc --noEmit` (TS), `ruff check` (Python), `go vet ./...` (Go) — language-appropriate. Fix all errors.
+MUST verify each item before attempt_completion (behavior + state):
+- [ ] **Compiler/linter clean**: run language-appropriate check (`cargo check`, `tsc --noEmit`, `ruff check`, `go vet ./...`). Fix all errors. Check STATE.md if new constraints appear.
 - [ ] **STATE.md read**: verify no active constraints overlap modified paths.
-- [ ] **DOX chain read**: verify every AGENTS.md on the path from root to modified files was read.
-- [ ] **No YAGNI code**: scan diff for code without immediate caller or test. Delete speculative additions.
-- [ ] **rtk used**: verify every `npm`, `cargo`, `go`, `pip`, `rustc`, `node`, `python` command was prefixed with `rtk`.
-- [ ] **Caveman output**: no filler phrases (well, basically, actually, basically, obviously, you know). Review and trim.
+- [ ] **DOX chain read**: verify AGENTS.md chain was read. Check STATE.md for constraints on target paths.
+- [ ] **No YAGNI code**: scan diff for speculative code. Check STATE.md if any new constraints should be logged.
+- [ ] **rtk used**: verify every developer command was `rtk`-prefixed. STATE.md already logged any new tool requirements.
+- [ ] **Caveman output**: no filler phrases (well, basically, actually, basically, obviously, you know). Review and trim. Align tone with STATE.md language preference.
 
 ## Skills (load on behavior/state)
 
@@ -34,11 +34,11 @@ Skills load when the task BEHAVIOR or current STATE matches, not only on exact k
 
 | When behavior/state is → | Load | Instructions in |
 |-------------------------|------|-----------------|
-| Writing/modifying code — prefer minimal, simplest solution. Question if code is needed at all. | Ponytail | [skills/ponytail/SKILL.md](skills/ponytail/SKILL.md) |
-| Communicating output — need to be very concise, compress explanation, remove filler. | Caveman | [skills/caveman/SKILL.md](skills/caveman/SKILL.md) |
-| Update or generating PRD, docs, or specs — must reflect actual code, not ideals. No technical jargon. | Arugoflow | [skills/arugoflow/SKILL.md](skills/arugoflow/SKILL.md) |
-| Auditing codebase — check for dead code, over-engineering, bloat, unnecessary complexity. | Ponytail-audit | [skills/ponytail-audit/SKILL.md](skills/ponytail-audit/SKILL.md) |
-| Debugging — finding root cause, isolating errors, troubleshooting failures. | Isolation-debug | [skills/isolation-debug/SKILL.md](skills/isolation-debug/SKILL.md) |
+| Writing/modifying code — prefer minimal, simplest. Ponytail always active when building code. | Ponytail | [skills/ponytail/SKILL.md](skills/ponytail/SKILL.md) |
+| Communicating output — need concise, filler-free text. Caveman always active for output. | Caveman | [skills/caveman/SKILL.md](skills/caveman/SKILL.md) |
+| Generating/updating PRD or docs. State: code has changed, docs are stale. | Arugoflow | [skills/arugoflow/SKILL.md](skills/arugoflow/SKILL.md) |
+| Auditing codebase — over-engineering or bloat suspected. State: needs cleanup pass. | Ponytail-audit | [skills/ponytail-audit/SKILL.md](skills/ponytail-audit/SKILL.md) |
+| Debugging — errors occurring or root cause unknown. | Isolation-debug | [skills/isolation-debug/SKILL.md](skills/isolation-debug/SKILL.md) |
 
 ## Child DOX Index
 
@@ -60,6 +60,3 @@ Skills load when the task BEHAVIOR or current STATE matches, not only on exact k
 | [.vscode/](.vscode/) | VSCode tasks & settings |
 | [STATE.md](STATE.md) | Anti-regression state & constraints |
 
-## Symlinks (read this file)
-
-`.clinerules` · `.cursorrules` · `CLAUDE.md` · `.github/copilot-instructions.md`
