@@ -1,13 +1,16 @@
 # State & Constraints
 
 ## Anti-Regresi / Strict Constraints
+*(Isi dengan constraint yang harus dijaga dari regresi)*
 
-Framework betterimp-fw: status proyek saat ini masih **early setup**. Belum ada kode aplikasi yang dikelola. Constraint akan diisi saat proyek memiliki fitur yang perlu diproteksi dari regresi.
+Contoh:
+- `src/domain/` — logika bisnis inti, tidak boleh tambah dependensi framework
+- `config/database.ts` — kredensial database, jangan commit tanpa .env
+- `.env` — tidak boleh masuk version control, sudah di .gitignore
 
 ## Entry Log
+*(Catat setiap perubahan signifikan — kondisi/perilaku/state sebelum & sesudah)*
 
-| Tanggal | Perubahan | Pelaku |
-|---------|-----------|--------|
-| 2026-06-28 | Inisialisasi STATE.md (sebelumnya: file tidak ada, broken reference) | Zoo |
-| 2026-06-28 | Refactor besar: DOX rewrite, arugoflow integrasi, idempotent configure.sh, enforcement penuh (pre-commit blocker, CI/CD, symlinks, mode rules, VSCode config, audit-compliance). 11 enforcement layer aktif. | Zoo |
-| 2026-06-28 | Ponytail-audit cleanup: hapus COMPLIANCE_FIX.md, betterimp.gitignore; perkecil configure.sh (-90 baris), pre-commit hook, compliance.yml, .roo rules footer. | Zoo |
+| Tanggal (YYYY-MM-DD HH:mm) | Perubahan | Pelaku |
+|----------------------------|-----------|--------|
+| YYYY-MM-DD HH:mm | Deskripsi: [kondisi] → [tindakan] → [hasil]. State sebelum: X, state sesudah: Y. | Nama |
