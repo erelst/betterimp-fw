@@ -204,6 +204,7 @@ if has_tool "roo"; then
     fi
 fi
 
+
 # Verify symlinks for selected tools
 log_info "Verifying symlinks..."
 for link in .cursorrules CLAUDE.md .clinerules; do
@@ -443,6 +444,34 @@ else
     log_warning "python3 tidak ditemukan. Silakan konfigurasi MCP server secara manual."
 fi
 
+
+# Configure MCP for aider
+if has_tool "aider"; then
+    AIDER_CONF="$HOME/.aider.conf.yml"
+    if [ -f "$AIDER_CONF" ]; then
+        log_info "aider config exists — skipping MCP setup (manual merge needed)"
+    else
+        cat > "$AIDER_CONF" << 'MCPEOF'
+# Aider MCP Servers (auto-configured by betterimp-fw)
+mcp-servers:
+  codebase-memory:
+    command: CODEBASE_MEMORY_PLACEHOLDER
+  sequential-thinking:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+  memory:
+    command: npx
+    args: ["-y", "@modelcontextprotocol/server-memory"]
+MCPEOF
+        # Replace placeholder with actual path
+        if command -v codebase-memory-mcp >/dev/null 2>&1; then
+            sed "s|CODEBASE_MEMORY_PLACEHOLDER|$(command -v codebase-memory-mcp)|" "$AIDER_CONF" > "${AIDER_CONF}.tmp" && mv "${AIDER_CONF}.tmp" "$AIDER_CONF"
+        else
+            sed "s|CODEBASE_MEMORY_PLACEHOLDER|$HOME/.local/bin/codebase-memory-mcp|" "$AIDER_CONF" > "${AIDER_CONF}.tmp" && mv "${AIDER_CONF}.tmp" "$AIDER_CONF"
+        fi
+        log_info "  aider: MCP config created at ~/.aider.conf.yml"
+    fi
+fi
 
 # Final compliance check (run from target project directory)
 log_info "Running environment compliance check..."
